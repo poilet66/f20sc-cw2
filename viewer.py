@@ -22,10 +22,9 @@ class Viewer(ttk.Frame):
         fig = Figure(figsize=(5, 5), dpi=100)
         self.plot1 = fig.add_subplot(111)
         self.canvas = FigureCanvasTkAgg(fig, master=self)
-        self.canvas.get_tk_widget().pack()
+        self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
         self.toolbar = NavigationToolbar2Tk(self.canvas, self)
-        self.canvas.get_tk_widget().pack()
         self.toolbar.update()
 
         self.plot([i**2 for i in range(101)])
