@@ -8,11 +8,17 @@ Python Data Analysis of Document Tracker
 
 # TODO
 
-- [ ] Create / maintain requirements.txt
-- [ ] Set up tkinter  base
-- [ ] Set up modular component system
-- [ ] Set up controller class
-- [ ] Data import
+- [x] Set up tkinter  base
+- [x] Set up modular component system
+- [x] Set up controller class
+- [x] Data import
 - [ ] Document querying
+  - [ ] By country
+  - [ ] By continent
+  - [ ] By browser
+  - [ ] Top 10 readers
+- [ ] 'Also likes' functionality
+  - [ ] 'Also likes' graph
+- [ ] Command line usage
 - [ ] Graphing interface / Library ?
 
