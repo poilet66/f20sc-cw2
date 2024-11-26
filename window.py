@@ -2,10 +2,23 @@ import random
 import tkinter as tk
 from controller import Controller
 
-from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.backends._backend_tk import NavigationToolbar2Tk
+from viewer import Viewer
 
+class Application(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.geometry("500x500")
+        self.title("Data Visualiser")
+
+        self.controller = Controller()
+
+        # init stuff
+        # init stuff
+        # init stuff
+        self.viewer = Viewer(self, self.controller)
+        self.viewer.grid()
+
+        self.mainloop()
 
 class Window:
     def __init__(self, controller: Controller):
@@ -22,28 +35,12 @@ class Window:
         self.sqr_btn.pack()
 
         # plot stuff
-        fig = Figure(figsize=(5, 5), dpi=100)
-        self.plot1 = fig.add_subplot(111)
-        self.canvas = FigureCanvasTkAgg(fig, master=self.window)
-        self.canvas.get_tk_widget().pack()
-
-        self.toolbar = NavigationToolbar2Tk(self.canvas, self.window)
-        self.canvas.get_tk_widget().pack()
-
-        self.plot([i**2 for i in range(101)])
 
         # run window
         self.window.mainloop()
 
-    def plot(self, y: list[int]) -> None:
-        """plot a function"""
-
-        self.plot1.clear()
-        self.plot1.plot(y)
-        self.canvas.draw()
-
-        self.toolbar.update()
 
 
 if __name__ == "__main__":
-    w = Window(Controller())
+    app = Application()
+    app.mainloop()
