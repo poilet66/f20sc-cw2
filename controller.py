@@ -1,11 +1,11 @@
 import random
 
 
+from data_controller import DataController
 from typing import TYPE_CHECKING, Optional
 if TYPE_CHECKING:
     from viewer import Viewer 
     from controls import Controls
-    from data_controller import DataController
 
 class Controller:
     def __init__(self):
