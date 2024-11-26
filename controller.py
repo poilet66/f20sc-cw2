@@ -5,15 +5,17 @@ from typing import TYPE_CHECKING, Optional
 if TYPE_CHECKING:
     from viewer import Viewer 
     from controls import Controls
-
-from data_controller import DataController
+    from data_controller import DataController
 
 class Controller:
     def __init__(self):
         self.viewer: Optional["Viewer"] = None
         self.controls: Optional["Controls"] = None
-        self.data_controller: Optional[DataController] = DataController()
-        self.data_controller.register_controller(self)
+        self.data_controller = DataController()
+
+        # Default functionality, NOTE: this is just for testing
+        self.plot_countries()
+
 
     def register_controls(self, controls: "Controls"):
         self.controls = controls
