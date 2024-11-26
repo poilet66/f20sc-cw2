@@ -21,7 +21,7 @@ class Controls(ttk.Frame):
 
         self.input = tk.Text(self, height=1, width=20)
 
-        self.rnd_btn.pack()
-        self.sqr_btn.pack()
-        self.file_btn.pack()
-        self.input.pack()
+        self.rnd_btn.pack(side=tk.LEFT)
+        self.sqr_btn.pack(side=tk.LEFT)
+        self.file_btn.pack(side=tk.LEFT)
+        self.input.pack(side=tk.LEFT)
