@@ -11,4 +11,4 @@ class RandomButton(ButtonBase):
 
     def handle_click(self) -> None:
         values = [random.randint(0, 100) for _ in range(101)]
-        self.plot_callback(values)
+        self.plot_callback()
