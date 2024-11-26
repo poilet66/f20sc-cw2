@@ -30,5 +30,6 @@ class Controller:
 
     def plot_countries(self):
         if self.viewer:
-            self.viewer.plot_bargraph()
+            df = self.data_controller.top_k_countries(10)
+            self.viewer.plot_bargraph(df, df.columns[0], df.columns[1])
 
