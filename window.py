@@ -24,7 +24,7 @@ class Application(tk.Tk):
         self.controls = Controls(self, self.controller)
         self.controls.grid()
 
-        self.viewer = Viewer(self, self.controller)
+        self.viewer: Viewer = Viewer(self, self.controller)
         self.viewer.grid()
 
 
@@ -45,39 +45,3 @@ class Window:
 
         # run window
         self.window.mainloop()
-
-    def plot(self, y: list[int]) -> None:
-        """plot a function"""
-
-        self.plot1.clear()
-        self.plot1.plot(y)
-        self.canvas.draw()
-
-        self.toolbar.update()
-
-    def plot_bargraph(self, df: pd.DataFrame, x_col: str, y_col: str, title: str = "Graph") -> None:
-        self.plot1.clear()
-        
-        bars = self.plot1.bar(
-            df[x_col],
-            df[y_col]
-        )
-
-        if title:
-            self.plot1.set_title(title)
-        
-        self.canvas.draw()
-        self.toolbar.update()
-
-    def change_file(self, new_file_path: str) -> None:
-        """ Change selected data file and instantiate new data controller for it """
-        self.data_controller.change_file(new_file_path)
-
-        df = self.data_controller.top_k_countries(10)
-
-        self.plot_bargraph(df, df.columns[0], df.columns[1])
-
-
-if __name__ == "__main__":
-    app = Application(DataController())
-    app.mainloop()

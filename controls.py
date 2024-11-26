@@ -16,7 +16,7 @@ class Controls(ttk.Frame):
 
         #self.rnd_btn = tk.Button(self.window, text="randoms", command=lambda: self.plot([random.randint(0, 100) for _ in range(101)]))
         self.sqr_btn = tk.Button(self, text="squares", command=self.controller.plot_squares)
-        self.file_btn = Button_SelectFile(self, change_file_callback=lambda x: x)
+        self.file_btn = Button_SelectFile(self, change_file_callback=self.controller.change_file)
 
         self.rnd_btn.pack()
         self.sqr_btn.pack()

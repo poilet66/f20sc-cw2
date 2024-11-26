@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 
+import pandas as pd
+
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.backends._backend_tk import NavigationToolbar2Tk
@@ -34,5 +36,19 @@ class Viewer(ttk.Frame):
         self.plot1.plot(y)
         self.canvas.draw()
 
+        self.toolbar.update()
+
+    def plot_bargraph(self, df: pd.DataFrame, x_col: str, y_col: str, title: str = "Graph") -> None:
+        self.plot1.clear()
+        
+        bars = self.plot1.bar(
+            df[x_col],
+            df[y_col]
+        )
+
+        if title:
+            self.plot1.set_title(title)
+        
+        self.canvas.draw()
         self.toolbar.update()
 
