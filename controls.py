@@ -34,6 +34,7 @@ class Controls(ttk.Frame):
         self.globalUUID = tk.Checkbutton(self, text="global", command=controller.toggle_global) # select to toggle by default
         self.globalUUID.select()
         self.textInput = tk.Text(self, height=1, width=20)
+        self.searchBTN = tk.Button(self, text="Search", command=controller.search_doc)
 
         self.file.grid(row=1, column=0)
         self.fileSelector.grid(row=0, column=0)
@@ -45,6 +46,7 @@ class Controls(ttk.Frame):
         self.readerProfileBTN.grid(row=0, column=4)
         self.globalUUID.grid(row=0, column=5)
         self.textInput.grid(row=1, column=5)
+        self.searchBTN.grid(row=2, column=5)
 
     def disable(self):
         self.file.config(state=tk.DISABLED)
@@ -57,6 +59,7 @@ class Controls(ttk.Frame):
         self.readerProfileBTN.config(state=tk.DISABLED)
         self.globalUUID.config(state=tk.DISABLED)
         self.textInput.config(state=tk.DISABLED)
+        self.searchBTN.config(state=tk.DISABLED)
 
     def enable(self):
         self.file.config(state=tk.NORMAL)
@@ -69,3 +72,4 @@ class Controls(ttk.Frame):
         self.readerProfileBTN.config(state=tk.NORMAL)
         self.globalUUID.config(state=tk.NORMAL)
         self.textInput.config(state=tk.NORMAL)
+        self.searchBTN.config(state=tk.NORMAL)
