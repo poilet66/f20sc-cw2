@@ -18,7 +18,7 @@ class Controls(ttk.Frame):
         self.randomBTN = RandomButton(self, controller.plot_random)
 
         #q2
-        self.countryBTN = ttk.Button(self, text="country", command=self.controller.do_stuff)
+        self.countryBTN = ttk.Button(self, text="country", command=self.controller.plot_countries)
         self.continentBTN = ttk.Button(self, text="continent")
 
         #q3
@@ -31,7 +31,8 @@ class Controls(ttk.Frame):
         #q5
         self.alsoLikesBTN = tk.Button(self, text="Also likes")
 
-        self.globalUUID = tk.Checkbutton(self, text="global")
+        self.globalUUID = tk.Checkbutton(self, text="global", command=controller.toggle_global) # select to toggle by default
+        self.globalUUID.select()
         self.textInput = tk.Text(self, height=1, width=20)
 
         self.file.grid(row=1, column=0)

@@ -3,18 +3,18 @@ import time
 import threading
 
 
+from data_controller import DataController
 from typing import TYPE_CHECKING, Optional
 if TYPE_CHECKING:
     from viewer import Viewer 
     from controls import Controls
 
-from data_controller import DataController
-
 class Controller:
     def __init__(self):
         self.viewer: Optional["Viewer"] = None
         self.controls: Optional["Controls"] = None
-        self.data_controller: Optional[DataController] = None
+        self.data_controller = DataController()
+
 
     def register_controls(self, controls: "Controls"):
         self.controls = controls
@@ -36,12 +36,17 @@ class Controller:
             self.viewer.plot([i**2 for i in range(121)])
 
     def plot_countries(self):
+        print('plotting countries..')
         if self.viewer:
             df = self.data_controller.top_k_countries(10)
-            self.viewer.plot_bargraph(df, df.columns[0], df.columns[1])
+            self.viewer.plot_bargraph(df, df.columns[0], df.columns[1], title = "Viewage by Country")
 
     def on_file_change(self, new_file_path):
         self.data_controller.change_file(new_file_path)
+
+    def toggle_global(self):
+        self.data_controller.global_toggled = not self.data_controller.global_toggled
+        print(f'global: {self.data_controller.global_toggled}')
 
     def do_stuff(self):
 
