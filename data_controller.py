@@ -10,15 +10,10 @@ class DataController:
         self.df = self.path_to_pd(file_path)
 
     def path_to_pd(self, file_path) -> pd.DataFrame:
-        # To get past 'trailing data' issue (not all in one entry)
-        data = []
-        with open(file_path, encoding='utf-8', mode='r') as f:
-            for line in f:
-                data.append(line)
-
-
-        df = pd.DataFrame(data)
+        
+        df =  pd.read_json(file_path, lines=True)
         print(df.dtypes)
+
         return df
 
     def top_k_countries(self) -> pd.DataFrame:
