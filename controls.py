@@ -2,10 +2,11 @@ from tkinter import ttk
 import tkinter as tk
 from buttons.random_button import RandomButton
 from buttons.file_select import Button_SelectFile
+from controller import Controller
 
 class Controls(ttk.Frame):
 
-    def __init__(self, parent: tk.Misc, controller):
+    def __init__(self, parent: tk.Misc, controller: Controller):
         super().__init__(parent)
 
         self.controller = controller
@@ -18,6 +19,9 @@ class Controls(ttk.Frame):
         self.sqr_btn = tk.Button(self, text="squares", command=self.controller.plot_squares)
         self.file_btn = Button_SelectFile(self, change_file_callback=self.controller.on_file_change)
 
+        self.input = tk.Text(self, height=1, width=20)
+
         self.rnd_btn.pack()
         self.sqr_btn.pack()
         self.file_btn.pack()
+        self.input.pack()

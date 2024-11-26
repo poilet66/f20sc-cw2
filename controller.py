@@ -20,7 +20,7 @@ class Controller:
     def register_viewer(self, viewer: "Viewer"):
         self.viewer = viewer
 
-    def register_data_controller(self, data_controller):
+    def register_data_controller(self, data_controller: "DataController"):
         self.data_controller = data_controller
 
 

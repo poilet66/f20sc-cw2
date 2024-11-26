@@ -3,6 +3,8 @@ from tkinter import ttk
 
 import pandas as pd
 
+from controller import Controller
+
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.backends._backend_tk import NavigationToolbar2Tk
@@ -10,7 +12,7 @@ from matplotlib.backends._backend_tk import NavigationToolbar2Tk
 
 class Viewer(ttk.Frame):
 
-    def __init__(self, parent: tk.Misc, controller):
+    def __init__(self, parent: tk.Misc, controller: Controller):
         super().__init__(parent)
         self.controller = controller
         self.controller.register_viewer(self)

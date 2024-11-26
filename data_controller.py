@@ -13,7 +13,7 @@ class DataController:
         self.df = None
         self.document_uuid = None
 
-    def register_controller(self, controller) -> None:
+    def register_controller(self, controller: "Controller") -> None:
         self.controller = controller
 
     def change_file(self, file_path) -> None:
