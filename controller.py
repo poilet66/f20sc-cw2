@@ -1,4 +1,6 @@
 import random
+import time
+import threading
 
 
 from data_controller import DataController
@@ -20,7 +22,7 @@ class Controller:
     def register_viewer(self, viewer: "Viewer"):
         self.viewer = viewer
 
-    def register_data_controller(self, data_controller):
+    def register_data_controller(self, data_controller: "DataController"):
         self.data_controller = data_controller
 
 
@@ -41,4 +43,19 @@ class Controller:
 
     def on_file_change(self, new_file_path):
         self.data_controller.change_file(new_file_path)
-        self.plot_countries()
+
+    def do_stuff(self):
+
+        # someting from data_controller
+        def long_task():
+            print("starting")
+            time.sleep(1)
+            # possibly make this callback
+            if self.controls:
+                self.controls.enable()
+            print("finishing")
+
+        if self.controls:
+            self.controls.disable()
+        a = threading.Thread(target=long_task)
+        a.start()
