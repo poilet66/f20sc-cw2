@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import ttk
-from controller import Controller, Event
 
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
@@ -8,9 +7,11 @@ from matplotlib.backends._backend_tk import NavigationToolbar2Tk
 
 
 class Viewer(ttk.Frame):
-    def __init__(self, parent: tk.Misc, controller: Controller):
+
+    def __init__(self, parent: tk.Misc, controller):
         super().__init__(parent)
         self.controller = controller
+        self.controller.register_viewer(self)
 
 
 
@@ -24,8 +25,6 @@ class Viewer(ttk.Frame):
         self.toolbar.update()
 
         self.plot([i**2 for i in range(101)])
-
-        self.controller.add_listener(Event.A, self.plot)
 
 
     def plot(self, y) -> None:

@@ -2,6 +2,7 @@ import random
 import tkinter as tk
 from controller import Controller
 
+from controls import Controls
 from viewer import Viewer
 
 class Application(tk.Tk):
@@ -12,11 +13,13 @@ class Application(tk.Tk):
 
         self.controller = Controller()
 
-        # init stuff
-        # init stuff
-        # init stuff
         self.viewer = Viewer(self, self.controller)
         self.viewer.grid()
+
+        self.controls = Controls(self, self.controller)
+        self.controls.grid()
+
+
 
         self.mainloop()
 
