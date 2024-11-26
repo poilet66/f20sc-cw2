@@ -1,10 +1,6 @@
 import tkinter as tk
 from controller import Controller
 
-import pandas as pd
-
-import pandas as pd
-
 from controls import Controls
 from viewer import Viewer
 

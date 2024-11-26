@@ -12,16 +12,45 @@ class Controls(ttk.Frame):
         self.controller = controller
         self.controller.register_controls(self)
 
-        # button stuff
-        self.rnd_btn = RandomButton(self, plot_callback=self.controller.plot_random)
+        #q2
+        self.countryBTN = ttk.Button(self, text="contry", command=self.controller.do_stuff)
+        self.continentBTN = ttk.Button(self, text="continent")
 
-        #self.rnd_btn = tk.Button(self.window, text="randoms", command=lambda: self.plot([random.randint(0, 100) for _ in range(101)]))
-        self.sqr_btn = tk.Button(self, text="squares", command=self.controller.plot_squares)
-        self.file_btn = Button_SelectFile(self, change_file_callback=self.controller.on_file_change)
+        #q3
+        self.browsersVerboseBTN = tk.Button(self, text="browser verbose")
+        self.browsersBTN = tk.Button(self, text="browser")
 
-        self.input = tk.Text(self, height=1, width=20)
+        #q4
+        self.readerProfileBTN = tk.Button(self, text="reader profile")
 
-        self.rnd_btn.pack(side=tk.LEFT)
-        self.sqr_btn.pack(side=tk.LEFT)
-        self.file_btn.pack(side=tk.LEFT)
-        self.input.pack(side=tk.LEFT)
+        #q5
+        self.alsoLikesBTN = tk.Button(self, text="Also likes")
+
+        self.globalUUID = tk.Checkbutton(self, text="global")
+        self.textInput = tk.Text(self, height=1, width=20)
+
+        self.countryBTN.pack(side=tk.LEFT)
+        self.continentBTN.pack(side=tk.LEFT)
+        self.browsersVerboseBTN.pack(side=tk.LEFT)
+        self.browsersBTN.pack(side=tk.LEFT)
+        self.readerProfileBTN.pack(side=tk.LEFT)
+        self.globalUUID.pack(side=tk.RIGHT)
+        self.textInput.pack(side=tk.RIGHT)
+
+    def disable(self):
+        self.countryBTN.config(state=tk.DISABLED)
+        self.continentBTN.config(state=tk.DISABLED)
+        self.browsersVerboseBTN.config(state=tk.DISABLED)
+        self.browsersBTN.config(state=tk.DISABLED)
+        self.readerProfileBTN.config(state=tk.DISABLED)
+        self.globalUUID.config(state=tk.DISABLED)
+        self.textInput.config(state=tk.DISABLED)
+
+    def enable(self):
+        self.countryBTN.config(state=tk.NORMAL)
+        self.continentBTN.config(state=tk.NORMAL)
+        self.browsersVerboseBTN.config(state=tk.NORMAL)
+        self.browsersBTN.config(state=tk.NORMAL)
+        self.readerProfileBTN.config(state=tk.NORMAL)
+        self.globalUUID.config(state=tk.NORMAL)
+        self.textInput.config(state=tk.NORMAL)
