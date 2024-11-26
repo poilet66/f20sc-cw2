@@ -13,9 +13,6 @@ class Controller:
         self.controls: Optional["Controls"] = None
         self.data_controller = DataController()
 
-        # Default functionality, NOTE: this is just for testing
-        self.plot_countries()
-
 
     def register_controls(self, controls: "Controls"):
         self.controls = controls
@@ -37,10 +34,11 @@ class Controller:
             self.viewer.plot([i**2 for i in range(121)])
 
     def plot_countries(self):
+        print('plotting countries..')
         if self.viewer:
             df = self.data_controller.top_k_countries(10)
             self.viewer.plot_bargraph(df, df.columns[0], df.columns[1])
 
     def on_file_change(self, new_file_path):
         self.data_controller.change_file(new_file_path)
-
+        self.plot_countries()

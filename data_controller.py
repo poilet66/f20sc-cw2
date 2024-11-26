@@ -22,7 +22,6 @@ class DataController:
     def path_to_pd(self, file_path) -> pd.DataFrame:
         
         df =  pd.read_json(file_path, lines=True)
-        print(df.dtypes)
 
         return df
 
