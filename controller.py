@@ -33,3 +33,6 @@ class Controller:
             df = self.data_controller.top_k_countries(10)
             self.viewer.plot_bargraph(df, df.columns[0], df.columns[1])
 
+    def on_file_change(self, new_file_path):
+        self.data_controller.change_file(new_file_path)
+

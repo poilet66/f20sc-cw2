@@ -1,16 +1,23 @@
 import pandas as pd
 
+from controller import Controller
 class DataController:
     def __init__(self) -> None:
+        self.controller: Controller = None
+
         self.file_path = None
         self.df = None
         self.document_uuid = None
+
+    def register_controller(self, controller) -> None:
+        self.controller = controller
 
     def change_file(self, file_path) -> None:
         self.file_path = file_path
         self.df = self.path_to_pd(file_path)
 
-        self.top_k_countries(10)
+        # TODO: This bit is just for testing, imagine it as 'default' functionality
+        self.controller.plot_countries()
 
     def set_document_filter(self, document_uuid) -> None:
         self.document_uuid = document_uuid
