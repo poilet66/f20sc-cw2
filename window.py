@@ -12,13 +12,12 @@ from data_controller import DataController
 
 
 class Application(tk.Tk):
-    def __init__(self, data_controller: DataController):
+    def __init__(self):
         super().__init__()
         self.geometry("500x500")
         self.title("Data Visualiser")
 
         self.controller = Controller()
-        self.data_controller = data_controller
 
 
         self.controls = Controls(self, self.controller)
@@ -27,14 +26,13 @@ class Application(tk.Tk):
         self.viewer: Viewer = Viewer(self, self.controller)
         self.viewer.grid()
 
-
+        self.controller.register_viewer(self.viewer)
 
         self.mainloop()
 
 class Window:
-    def __init__(self, controller: Controller, data_controller: DataController):
+    def __init__(self, controller: Controller):
         self.controller = controller
-        self.data_controller = data_controller
 
         # window stuff
         self.window = tk.Tk()

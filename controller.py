@@ -12,7 +12,8 @@ class Controller:
     def __init__(self):
         self.viewer: Optional["Viewer"] = None
         self.controls: Optional["Controls"] = None
-        self.data_controller: Optional[DataController] = None
+        self.data_controller: Optional[DataController] = DataController()
+        self.data_controller.register_controller(self)
 
     def register_controls(self, controls: "Controls"):
         self.controls = controls
