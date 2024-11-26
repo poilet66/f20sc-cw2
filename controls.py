@@ -12,8 +12,11 @@ class Controls(ttk.Frame):
         self.controller = controller
         self.controller.register_controls(self)
 
+        # file select button
+        self.fileBTN = Button_SelectFile(self, change_file_callback=self.controller.on_file_change)
+
         #q2
-        self.countryBTN = ttk.Button(self, text="contry", command=self.controller.do_stuff)
+        self.countryBTN = ttk.Button(self, text="country", command=self.controller.plot_countries)
         self.continentBTN = ttk.Button(self, text="continent")
 
         #q3
@@ -26,7 +29,8 @@ class Controls(ttk.Frame):
         #q5
         self.alsoLikesBTN = tk.Button(self, text="Also likes")
 
-        self.globalUUID = tk.Checkbutton(self, text="global")
+        self.globalUUID = tk.Checkbutton(self, text="global", command=controller.toggle_global) # select to toggle by default
+        self.globalUUID.select()
         self.textInput = tk.Text(self, height=1, width=20)
 
         self.countryBTN.pack(side=tk.LEFT)
@@ -36,6 +40,7 @@ class Controls(ttk.Frame):
         self.readerProfileBTN.pack(side=tk.LEFT)
         self.globalUUID.pack(side=tk.RIGHT)
         self.textInput.pack(side=tk.RIGHT)
+        self.fileBTN.pack(side=tk.RIGHT)
 
     def disable(self):
         self.countryBTN.config(state=tk.DISABLED)

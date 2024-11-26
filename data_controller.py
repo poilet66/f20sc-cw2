@@ -11,6 +11,7 @@ class DataController:
         self.file_path = None
         self.df = None
         self.document_uuid = None
+        self.global_toggled = True
 
     def register_controller(self, controller: "Controller") -> None:
         self.controller = controller
@@ -34,18 +35,15 @@ class DataController:
         """
         working_df = self.df # Use operations on this
 
-        if self.document_uuid is not None:
+        # If we're not in global mode and valid uuid is provided
+        if not self.global_toggled and self.document_uuid is not None:
             working_df = working_df[working_df['env-doc-id'] == self.document_uuid]
 
 
-        ret = (
+        return (
             working_df['visitor_country']
             .value_counts()
             .head(k)
             .reset_index()
         )
-
-        print(ret)
-
-        return ret
         

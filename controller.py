@@ -39,10 +39,14 @@ class Controller:
         print('plotting countries..')
         if self.viewer:
             df = self.data_controller.top_k_countries(10)
-            self.viewer.plot_bargraph(df, df.columns[0], df.columns[1])
+            self.viewer.plot_bargraph(df, df.columns[0], df.columns[1], title = "Viewage by Country")
 
     def on_file_change(self, new_file_path):
         self.data_controller.change_file(new_file_path)
+
+    def toggle_global(self):
+        self.data_controller.global_toggled = not self.data_controller.global_toggled
+        print(f'global: {self.data_controller.global_toggled}')
 
     def do_stuff(self):
 

@@ -10,7 +10,7 @@ from data_controller import DataController
 class Application(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.geometry("500x500")
+        self.geometry("700x500")
         self.title("Data Visualiser")
 
         self.columnconfigure(0, weight=1)
