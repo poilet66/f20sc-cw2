@@ -12,7 +12,6 @@ if __name__ == "__main__":
     greeting = tk.Label(text=str(a))
     greeting.pack()
 
-    kkkk
     a = threading.Thread(target=mainloop)
     a.start()
 

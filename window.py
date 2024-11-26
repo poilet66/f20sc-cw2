@@ -6,6 +6,8 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.backends._backend_tk import NavigationToolbar2Tk
 
+from buttons.random_button import RandomButton
+
 
 class Window:
     def __init__(self, controller: Controller):
@@ -16,7 +18,8 @@ class Window:
         self.window.geometry("500x500")
 
         # button stuff
-        self.rnd_btn = tk.Button(self.window, text="randoms", command=lambda: self.plot([random.randint(0, 100) for _ in range(101)]))
+        self.rnd_btn = RandomButton(self.window, plot_callback=self.plot)
+        #self.rnd_btn = tk.Button(self.window, text="randoms", command=lambda: self.plot([random.randint(0, 100) for _ in range(101)]))
         self.sqr_btn = tk.Button(self.window, text="squares", command=lambda: self.plot([i**2 for i in range(101)]))
         self.rnd_btn.pack()
         self.sqr_btn.pack()
