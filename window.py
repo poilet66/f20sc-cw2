@@ -2,6 +2,8 @@ import random
 import tkinter as tk
 from controller import Controller
 
+import pandas as pd
+
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.backends._backend_tk import NavigationToolbar2Tk
@@ -32,7 +34,7 @@ class Window:
 
         # plot stuff
         fig = Figure(figsize=(5, 5), dpi=100)
-        self.plot1 = fig.add_subplot(111)
+        self.plot1: Figure = fig.add_subplot(111)
         self.canvas = FigureCanvasTkAgg(fig, master=self.window)
         self.canvas.get_tk_widget().pack()
 
@@ -53,9 +55,27 @@ class Window:
 
         self.toolbar.update()
 
+    def plot_bargraph(self, df: pd.DataFrame, x_col: str, y_col: str, title: str = "Graph") -> None:
+        self.plot1.clear()
+        
+        bars = self.plot1.bar(
+            df[x_col],
+            df[y_col]
+        )
+
+        if title:
+            self.plot1.set_title(title)
+        
+        self.canvas.draw()
+        self.toolbar.update()
+
     def change_file(self, new_file_path: str) -> None:
         """ Change selected data file and instantiate new data controller for it """
         self.data_controller.change_file(new_file_path)
+
+        df = self.data_controller.top_k_countries(10)
+
+        self.plot_bargraph(df, df.columns[0], df.columns[1])
 
 
 if __name__ == "__main__":
