@@ -37,7 +37,8 @@ class DataController:
 
         # If we're not in global mode and valid uuid is provided
         if not self.global_toggled and self.document_uuid is not None:
-            working_df = working_df[working_df['env-doc-id'] == self.document_uuid]
+
+            working_df = working_df[working_df['env_doc_id'] == self.document_uuid] # TODO: Add check here to ensure doc exists?
 
 
         return (
