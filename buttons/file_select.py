@@ -5,7 +5,7 @@ from tkinter.filedialog import askopenfilename
 from tkinter import Button
 
 class Button_SelectFile(ButtonBase):
-    def __init__(self, master: tk.Tk, change_file_callback: Callable[[str], None]) -> None:
+    def __init__(self, master: tk.Misc, change_file_callback: Callable[[str], None]) -> None:
         self.file_callback = change_file_callback
         super().__init__(master=master, label="Choose a file")
 

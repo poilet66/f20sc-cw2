@@ -12,8 +12,13 @@ class Controls(ttk.Frame):
         self.controller = controller
         self.controller.register_controls(self)
 
+        self.fileSelector = Button_SelectFile(self, controller.on_file_change)
+        self.file = tk.Text(self, height=1, width=20)
+
+        self.randomBTN = RandomButton(self, controller.plot_random)
+
         #q2
-        self.countryBTN = ttk.Button(self, text="contry", command=self.controller.do_stuff)
+        self.countryBTN = ttk.Button(self, text="country", command=self.controller.do_stuff)
         self.continentBTN = ttk.Button(self, text="continent")
 
         #q3
@@ -29,15 +34,21 @@ class Controls(ttk.Frame):
         self.globalUUID = tk.Checkbutton(self, text="global")
         self.textInput = tk.Text(self, height=1, width=20)
 
-        self.countryBTN.pack(side=tk.LEFT)
-        self.continentBTN.pack(side=tk.LEFT)
-        self.browsersVerboseBTN.pack(side=tk.LEFT)
-        self.browsersBTN.pack(side=tk.LEFT)
-        self.readerProfileBTN.pack(side=tk.LEFT)
-        self.globalUUID.pack(side=tk.RIGHT)
-        self.textInput.pack(side=tk.RIGHT)
+        self.file.grid(row=1, column=0)
+        self.fileSelector.grid(row=0, column=0)
+        self.randomBTN.grid(row=0, column=1)
+        self.countryBTN.grid(row=0, column=2)
+        self.continentBTN.grid(row=1, column=2)
+        self.browsersVerboseBTN.grid(row=0, column=3)
+        self.browsersBTN.grid(row=1, column=3)
+        self.readerProfileBTN.grid(row=0, column=4)
+        self.globalUUID.grid(row=0, column=5)
+        self.textInput.grid(row=1, column=5)
 
     def disable(self):
+        self.file.config(state=tk.DISABLED)
+        self.fileSelector.config(state=tk.DISABLED)
+        self.randomBTN.config(state=tk.DISABLED)
         self.countryBTN.config(state=tk.DISABLED)
         self.continentBTN.config(state=tk.DISABLED)
         self.browsersVerboseBTN.config(state=tk.DISABLED)
@@ -47,6 +58,9 @@ class Controls(ttk.Frame):
         self.textInput.config(state=tk.DISABLED)
 
     def enable(self):
+        self.file.config(state=tk.NORMAL)
+        self.fileSelector.config(state=tk.NORMAL)
+        self.randomBTN.config(state=tk.NORMAL)
         self.countryBTN.config(state=tk.NORMAL)
         self.continentBTN.config(state=tk.NORMAL)
         self.browsersVerboseBTN.config(state=tk.NORMAL)

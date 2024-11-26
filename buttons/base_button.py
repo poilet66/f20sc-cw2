@@ -17,3 +17,9 @@ class ButtonBase(ABC):
 
     def pack(self, **kwargs) -> None:
         self.button.pack(**kwargs)
+
+    def grid(self, **kwargs) -> None:
+        self.button.grid(**kwargs)
+
+    def config(self, **kwargs) -> None:
+        self.button.config(**kwargs)
