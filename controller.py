@@ -1,18 +1,23 @@
 import random
 
-from viewer import Viewer
-from controls import Controls
+
+from typing import TYPE_CHECKING, Optional
+if TYPE_CHECKING:
+    from viewer import Viewer 
+    from controls import Controls
+
 from data_controller import DataController
+
 class Controller:
     def __init__(self):
-        self.viewer: Viewer = None
-        self.controls: Controls = None
-        self.data_controller: DataController = None
+        self.viewer: Optional["Viewer"] = None
+        self.controls: Optional["Controls"] = None
+        self.data_controller: Optional[DataController] = None
 
-    def register_controls(self, controls):
+    def register_controls(self, controls: "Controls"):
         self.controls = controls
 
-    def register_viewer(self, viewer):
+    def register_viewer(self, viewer: "Viewer"):
         self.viewer = viewer
 
     def register_data_controller(self, data_controller):

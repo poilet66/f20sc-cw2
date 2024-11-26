@@ -1,9 +1,13 @@
 import pandas as pd
 
-from controller import Controller
+from typing import TYPE_CHECKING, Optional
+if TYPE_CHECKING:
+    from controller import Controller
+
+
 class DataController:
     def __init__(self) -> None:
-        self.controller: Controller = None
+        self.controller: Optional["Controller"] = None
 
         self.file_path = None
         self.df = None
