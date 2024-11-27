@@ -4,7 +4,7 @@ import threading
 
 
 from data_controller import DataController
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Optional, Callable
 if TYPE_CHECKING:
     from viewer import Viewer 
     from controls import Controls
@@ -54,18 +54,25 @@ class Controller:
             print(f'new doc id: {inputted_doc_id}')
             self.data_controller.set_document_filter(inputted_doc_id)
 
-    def do_stuff(self):
-
-        # someting from data_controller
-        def long_task():
-            print("starting")
-            time.sleep(1)
-            # possibly make this callback
-            if self.controls:
-                self.controls.enable()
-            print("finishing")
-
+    def do_long_task(self, task: Callable):
+        # disable controls
         if self.controls:
             self.controls.disable()
-        a = threading.Thread(target=long_task)
-        a.start()
+        
+        # start task on separate thread
+        thread = threading.Thread(target=task)
+        thread.start()
+        
+        def check_completion():
+            thread.join()  # Wait for task thread to finish
+            # enable controls
+            if self.controls:
+                self.controls.enable()
+        
+        # Start the checker thread
+        threading.Thread(target=check_completion).start()
+
+    def long_task_example(self):
+        print("starting")
+        time.sleep(1)
+        print("finishing")

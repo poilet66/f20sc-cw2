@@ -4,6 +4,8 @@ from buttons.random_button import RandomButton
 from buttons.file_select import Button_SelectFile
 from controller import Controller
 
+import time
+
 class Controls(ttk.Frame):
 
     def __init__(self, parent: tk.Misc, controller: Controller):
@@ -19,7 +21,11 @@ class Controls(ttk.Frame):
 
         #q2
         self.countryBTN = ttk.Button(self, text="country", command=self.controller.plot_countries)
-        self.continentBTN = ttk.Button(self, text="continent")
+        self.continentBTN = ttk.Button(
+            self, 
+            text="continent", 
+            command=lambda: self.controller.do_long_task(lambda: self.controller.long_task_example())
+        )
 
         #q3
         self.browsersVerboseBTN = tk.Button(self, text="browser verbose")
