@@ -49,7 +49,7 @@ class Controller:
         print(f'global: {self.data_controller.global_toggled}')
 
     def search_doc(self):
-        inputted_doc_id = self.controls.textInput.get("1.0", "end")
+        inputted_doc_id = self.controls.textInput.get("1.0", "end").strip()
         if inputted_doc_id is not None and inputted_doc_id != "": # If doc id provided
             print(f'new doc id: {inputted_doc_id}')
             self.data_controller.set_document_filter(inputted_doc_id)
