@@ -13,8 +13,8 @@ Python Data Analysis of Document Tracker
 - [x] Set up controller class
 - [x] Data import
 - [ ] Document querying
-  - [ ] By country
-  - [ ] By continent
+  - [x] By country
+  - [x] By continent
   - [ ] By browser
   - [ ] Top 10 readers
 - [ ] 'Also likes' functionality
