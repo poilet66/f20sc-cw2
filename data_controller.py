@@ -1,4 +1,5 @@
 import pandas as pd
+from typing import Optional
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -8,10 +9,13 @@ if TYPE_CHECKING:
 class DataController:
     def __init__(self) -> None:
 
-        self.file_path = None
+        self.file_path: Optional[str] = None
         self.df = None
         self.document_uuid = None
         self.global_toggled = True
+
+    def has_file(self) -> bool:
+        return self.file_path is not None
 
     def register_controller(self, controller: "Controller") -> None:
         self.controller = controller

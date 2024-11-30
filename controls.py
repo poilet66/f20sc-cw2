@@ -4,7 +4,6 @@ from buttons.random_button import RandomButton
 from buttons.file_select import Button_SelectFile
 from controller import Controller
 
-import time
 
 class Controls(ttk.Frame):
 
@@ -17,14 +16,12 @@ class Controls(ttk.Frame):
         self.fileSelector = Button_SelectFile(self, controller.on_file_change)
         self.file = tk.Text(self, height=1, width=20)
 
-        self.randomBTN = RandomButton(self, controller.plot_random)
+        self.randomBTN = ttk.Button(self, text="random button", command=lambda: controller.set_mode("Random"))
+        self.squareBTN = ttk.Button(self, text="square button", command=lambda: controller.set_mode("Square"))
 
         #q2
-        self.countryBTN = ttk.Button(self, text="country", command=self.controller.plot_countries)
-        self.continentBTN = ttk.Button(
-            self, 
-            text="continent", 
-            command=lambda: self.controller.do_long_task(lambda: self.controller.long_task_example())
+        self.countryBTN = ttk.Button(self, text="country", command=lambda: self.controller.set_mode("country"))
+        self.continentBTN = ttk.Button( self, text="continent", command=lambda: self.controller.set_mode("Continent")
         )
 
         #q3
@@ -40,11 +37,12 @@ class Controls(ttk.Frame):
         self.globalUUID = tk.Checkbutton(self, text="global", command=controller.toggle_global) # select to toggle by default
         self.globalUUID.select()
         self.textInput = tk.Text(self, height=1, width=20)
-        self.searchBTN = tk.Button(self, text="Search", command=controller.search_doc)
+        self.searchBTN = tk.Button(self, text="Search", command=controller.search)
 
         self.file.grid(row=1, column=0)
         self.fileSelector.grid(row=0, column=0)
         self.randomBTN.grid(row=0, column=1)
+        self.squareBTN.grid(row=1, column=1)
         self.countryBTN.grid(row=0, column=2)
         self.continentBTN.grid(row=1, column=2)
         self.browsersVerboseBTN.grid(row=0, column=3)
@@ -58,6 +56,7 @@ class Controls(ttk.Frame):
         self.file.config(state=tk.DISABLED)
         self.fileSelector.config(state=tk.DISABLED)
         self.randomBTN.config(state=tk.DISABLED)
+        self.squareBTN.config(state=tk.DISABLED)
         self.countryBTN.config(state=tk.DISABLED)
         self.continentBTN.config(state=tk.DISABLED)
         self.browsersVerboseBTN.config(state=tk.DISABLED)
@@ -67,11 +66,18 @@ class Controls(ttk.Frame):
         self.textInput.config(state=tk.DISABLED)
         self.searchBTN.config(state=tk.DISABLED)
 
+    def disable_search(self):
+        self.searchBTN.config(state=tk.DISABLED)
+
+    def enable_search(self):
+        self.searchBTN.config(state=tk.NORMAL)
+
     def enable(self):
         self.file.config(state=tk.NORMAL)
         self.fileSelector.config(state=tk.NORMAL)
         self.randomBTN.config(state=tk.NORMAL)
         self.countryBTN.config(state=tk.NORMAL)
+        self.squareBTN.config(state=tk.NORMAL)
         self.continentBTN.config(state=tk.NORMAL)
         self.browsersVerboseBTN.config(state=tk.NORMAL)
         self.browsersBTN.config(state=tk.NORMAL)
