@@ -15,6 +15,11 @@ class Controller:
         self.controls: Optional["Controls"] = None
         self.data_controller = DataController()
 
+        self.mode = "Square"
+
+    def set_mode(self, mode: str):
+        print(f"setting mode: {mode}")
+        self.mode = mode
 
     def register_controls(self, controls: "Controls"):
         self.controls = controls
@@ -25,15 +30,6 @@ class Controller:
     def register_data_controller(self, data_controller: "DataController"):
         self.data_controller = data_controller
 
-
-    def plot_random(self):
-        # set viewer to randoms
-        if self.viewer:
-            self.viewer.plot([random.random() for _ in range(121)])
-
-    def plot_squares(self):
-        if self.viewer:
-            self.viewer.plot([i**2 for i in range(121)])
 
     def plot_countries(self):
         if self.viewer:
@@ -55,6 +51,28 @@ class Controller:
         inputted_doc_id = self.controls.textInput.get("1.0", "end").strip()
         if inputted_doc_id is not None and inputted_doc_id != "": # If doc id provided
             self.data_controller.set_document_filter(inputted_doc_id)
+
+    def search(self):
+        if not self.viewer:
+            return
+
+        if not self.data_controller.has_file():
+            # TODO: popup
+            print("no data selected")
+            return
+
+        # TODO: Enum
+        match self.mode:
+            case "Random":
+                self.viewer.plot([random.random() for _ in range(121)])
+            case "Square":
+                self.viewer.plot([i**2 for i in range(121)])
+            case "country":
+                self.plot_countries()
+            case "Continent":
+                self.plot_continents()
+            case _:
+                return "Something's wrong with the internet"
 
     def do_long_task(self, task: Callable):
         # disable controls
