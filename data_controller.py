@@ -59,8 +59,6 @@ class DataController:
 
         working_df = working_df.merge(continent_df, on="visitor_country", how="left")
 
-        print(working_df.columns)
-
         return (
             working_df['visitor_continent']
             .value_counts()

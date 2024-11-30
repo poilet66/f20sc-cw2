@@ -36,13 +36,11 @@ class Controller:
             self.viewer.plot([i**2 for i in range(121)])
 
     def plot_countries(self):
-        print('plotting countries..')
         if self.viewer:
             df = self.data_controller.top_k_countries(10)
             self.viewer.plot_bargraph(df, df.columns[0], df.columns[1], title = "Viewage by Country")
 
     def plot_continents(self):
-        print('plotting continents')
         if self.viewer:
             df = self.data_controller.top_continents()
             self.viewer.plot_bargraph(df, df.columns[0], df.columns[1], title="Viewage by Continent", tight=True)
@@ -52,12 +50,10 @@ class Controller:
 
     def toggle_global(self):
         self.data_controller.global_toggled = not self.data_controller.global_toggled
-        print(f'global: {self.data_controller.global_toggled}')
 
     def search_doc(self):
         inputted_doc_id = self.controls.textInput.get("1.0", "end").strip()
         if inputted_doc_id is not None and inputted_doc_id != "": # If doc id provided
-            print(f'new doc id: {inputted_doc_id}')
             self.data_controller.set_document_filter(inputted_doc_id)
 
     def do_long_task(self, task: Callable):
