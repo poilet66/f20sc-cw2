@@ -39,7 +39,9 @@ class Viewer(ttk.Frame):
 
         self.toolbar.update()
 
-    def plot_bargraph(self, df: pd.DataFrame, x_col: str, y_col: str, title: str = "Graph") -> None:
+    def plot_bargraph(self, df: pd.DataFrame, x_col: str, y_col: str, 
+                      title: str = "Graph", tight = False) -> None:
+                      
         self.plot1.clear()
         
         bars = self.plot1.bar(
@@ -49,6 +51,9 @@ class Viewer(ttk.Frame):
 
         if title:
             self.plot1.set_title(title)
+
+        if tight:
+            self.plot1.figure.tight_layout()
         
         self.canvas.draw()
         self.toolbar.update()
