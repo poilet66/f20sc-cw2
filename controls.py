@@ -24,7 +24,7 @@ class Controls(ttk.Frame):
         self.continentBTN = ttk.Button(
             self, 
             text="continent", 
-            command=lambda: self.controller.do_long_task(lambda: self.controller.long_task_example())
+            command= self.controller.plot_continents
         )
 
         #q3

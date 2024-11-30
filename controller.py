@@ -41,6 +41,12 @@ class Controller:
             df = self.data_controller.top_k_countries(10)
             self.viewer.plot_bargraph(df, df.columns[0], df.columns[1], title = "Viewage by Country")
 
+    def plot_continents(self):
+        print('plotting continents')
+        if self.viewer:
+            df = self.data_controller.top_continents()
+            self.viewer.plot_bargraph(df, df.columns[0], df.columns[1], title="Viewage by Continent", tight=True)
+
     def on_file_change(self, new_file_path):
         self.data_controller.change_file(new_file_path)
 

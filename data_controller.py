@@ -46,4 +46,24 @@ class DataController:
             .head(k)
             .reset_index()
         )
-        
+    
+    def top_continents(self) -> pd.DataFrame:
+        """
+        Return top k continents and their viewage
+        """
+        working_df = self.df
+        continent_df = pd.read_csv('data/continents.csv')
+
+        if not self.global_toggled and self.document_uuid is not None:
+            working_df = working_df[working_df['env_doc_id'] == self.document_uuid]
+
+        working_df = working_df.merge(continent_df, on="visitor_country", how="left")
+
+        print(working_df.columns)
+
+        return (
+            working_df['visitor_continent']
+            .value_counts()
+            .reset_index()
+        )
+         
