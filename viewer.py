@@ -9,6 +9,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.backends._backend_tk import NavigationToolbar2Tk
 
+import mplcursors
 
 class Viewer(ttk.Frame):
 
@@ -40,7 +41,7 @@ class Viewer(ttk.Frame):
         self.toolbar.update()
 
     def plot_bargraph(self, df: pd.DataFrame, x_col: str, y_col: str, 
-                      title: str = "Graph", tight = False) -> None:
+                      title: str = "Graph", tight = False, show_cursor = False) -> None:
                       
         self.plot1.clear()
         
@@ -54,6 +55,11 @@ class Viewer(ttk.Frame):
 
         if tight:
             self.plot1.figure.tight_layout()
+
+        if show_cursor:
+            print('yay')
+            cursor = mplcursors.cursor(bars, hover=True)
+            cursor.connect("add", lambda sel: sel.annotation.set_text("test"))
         
         self.canvas.draw()
         self.toolbar.update()

@@ -41,10 +41,10 @@ class Controller:
             df = self.data_controller.top_continents()
             self.viewer.plot_bargraph(df, df.columns[0], df.columns[1], title="Viewage by Continent", tight=True)
 
-    def plot_browsers(self, verbose = True):
+    def plot_browsers(self, verbose = True, cursor = False):
         if self.viewer:
             df = self.data_controller.top_browsers(verbose)
-            self.viewer.plot_bargraph(df, df.columns[0], df.columns[1], title="Viewage by Browser Agent")
+            self.viewer.plot_bargraph(df, df.columns[0], df.columns[1], title="Viewage by Browser Agent", show_cursor=cursor)
 
     def on_file_change(self, new_file_path):
         self.data_controller.change_file(new_file_path)
@@ -77,9 +77,9 @@ class Controller:
             case "Continent":
                 self.plot_continents()
             case "Browser":
-                self.plot_browsers(verbose=False)
+                self.plot_browsers(verbose=False, cursor=True)
             case "Browser-Verbose":
-                self.plot_browsers(verbose=True)
+                self.plot_browsers(verbose=True, cursor=True)
             case _:
                 return "Something's wrong with the internet"
 
