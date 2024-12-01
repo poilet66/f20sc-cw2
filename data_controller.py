@@ -68,3 +68,19 @@ class DataController:
             .value_counts()
             .reset_index()
         )
+
+    def top_browsers(self, verbose = True) -> pd.DataFrame:
+        """
+        Return top browsers, set verbose = False for grouping by browser agent (e.g.: All mozilla entries in one group)
+        """
+        working_df = self.df
+
+        # Filter by searched document if needed
+        if not self.global_toggled and self.document_uuid is not None:
+            working_df = working_df[working_df['env_doc_id'] == self.document_uuid]
+
+        return (
+            working_df["visitor_useragent"]
+            .value_counts()
+            .reset_index()
+        )

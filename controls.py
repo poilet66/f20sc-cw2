@@ -25,8 +25,8 @@ class Controls(ttk.Frame):
         )
 
         #q3
-        self.browsersVerboseBTN = tk.Button(self, text="browser verbose")
-        self.browsersBTN = tk.Button(self, text="browser")
+        self.browsersVerboseBTN = tk.Button(self, text="browser verbose", command=lambda: self.controller.set_mode("Browser-Verbose"))
+        self.browsersBTN = tk.Button(self, text="browser", command=lambda: self.controller.set_mode("Browser"))
 
         #q4
         self.readerProfileBTN = tk.Button(self, text="reader profile")
