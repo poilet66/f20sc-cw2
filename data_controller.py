@@ -1,4 +1,5 @@
 import pandas as pd
+import re
 from typing import Optional
 
 from typing import TYPE_CHECKING
@@ -69,18 +70,36 @@ class DataController:
             .reset_index()
         )
 
-    def top_browsers(self, verbose = True) -> pd.DataFrame:
+    def top_browsers(self, verbose) -> pd.DataFrame:
         """
         Return top browsers, set verbose = False for grouping by browser agent (e.g.: All mozilla entries in one group)
         """
         working_df = self.df
+        column = 'visitor_useragent' if verbose else 'visitor_useragent_grouped'
 
         # Filter by searched document if needed
         if not self.global_toggled and self.document_uuid is not None:
             working_df = working_df[working_df['env_doc_id'] == self.document_uuid]
 
+        # add grouped browser name if needed
+        if not verbose:
+            working_df['visitor_useragent_grouped'] = working_df['visitor_useragent'].apply(self.group_browser)
+
         return (
-            working_df["visitor_useragent"]
+            working_df[column]
             .value_counts()
             .reset_index()
         )
+    
+    def group_browser(self, name: str) -> str:
+        """
+        Provide input verbose browser name, get grouped name as return
+        """
+        pattern = r'^([^/]+)'
+        matched = re.search(pattern, name)
+
+        if matched:
+            return matched.group(1)
+        else:
+            return "Unknown"
+

@@ -41,7 +41,7 @@ class Controller:
             df = self.data_controller.top_continents()
             self.viewer.plot_bargraph(df, df.columns[0], df.columns[1], title="Viewage by Continent", tight=True)
 
-    def plot_browsers(self, verbose = False):
+    def plot_browsers(self, verbose = True):
         if self.viewer:
             df = self.data_controller.top_browsers(verbose)
             self.viewer.plot_bargraph(df, df.columns[0], df.columns[1], title="Viewage by Browser Agent")
