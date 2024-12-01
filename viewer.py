@@ -10,6 +10,10 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.backends._backend_tk import NavigationToolbar2Tk
 
 
+from typing import TYPE_CHECKING
+from PIL import ImageTk
+    
+
 class Viewer(ttk.Frame):
 
     def __init__(self, parent: tk.Misc, controller: Controller):
@@ -58,3 +62,12 @@ class Viewer(ttk.Frame):
         self.canvas.draw()
         self.toolbar.update()
 
+    def plot_image(self, image: ImageTk) -> None:
+        self.canvas.create_image(
+            400, 300,
+            image=image,
+            anchor='center'
+        )
+
+        self.canvas.draw()
+        self.toolbar.update()

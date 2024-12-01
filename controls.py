@@ -29,10 +29,10 @@ class Controls(ttk.Frame):
         self.browsersBTN = tk.Button(self, text="browser", command=lambda: self.controller.set_mode("Browser"))
 
         #q4
-        self.readerProfileBTN = tk.Button(self, text="reader profile")
+        self.readerProfileBTN = tk.Button(self, text="reader profile", command=lambda: self.controller.set_mode("graphviz"))
 
         #q5
-        self.alsoLikesBTN = tk.Button(self, text="Also likes")
+        self.alsoLikesBTN = tk.Button(self, text="Also likes", command=lambda: self.controller.set_mode("graphviz"))
 
         self.globalUUID = tk.Checkbutton(self, text="global", command=controller.toggle_global) # select to toggle by default
         self.globalUUID.select()
