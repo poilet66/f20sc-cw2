@@ -10,9 +10,7 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.backends._backend_tk import NavigationToolbar2Tk
 
 
-from typing import TYPE_CHECKING
-from PIL import ImageTk
-    
+import numpy as np
 
 class Viewer(ttk.Frame):
 
@@ -62,7 +60,7 @@ class Viewer(ttk.Frame):
         self.canvas.draw()
         self.toolbar.update()
 
-    def plot_image(self, image) -> None:
+    def plot_image(self, image: np.ndarray) -> None:
         self.plot1.clear()
         self.plot1.imshow(image)
         self.plot1.axis('off')
