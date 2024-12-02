@@ -29,7 +29,7 @@ class Controls(ttk.Frame):
         self.browsersBTN = tk.Button(self, text="browser", command=lambda: self.controller.set_mode("Browser"))
 
         #q4
-        self.readerProfileBTN = tk.Button(self, text="reader profile", command=lambda: self.controller.set_mode("graphviz"))
+        self.readerProfileBTN = tk.Button(self, text="reader profile", command=lambda: self.controller.set_mode("Top-Readers"))
 
         #q5
         self.alsoLikesBTN = tk.Button(self, text="Also likes", command=lambda: self.controller.set_mode("graphviz"))
@@ -37,7 +37,13 @@ class Controls(ttk.Frame):
         self.globalUUID = tk.Checkbutton(self, text="global", command=controller.toggle_global) # select to toggle by default
         self.globalUUID.select()
         self.textInput = tk.Text(self, height=1, width=20)
-        self.searchBTN = tk.Button(self, text="Search", command=lambda: controller.do_long_task(controller.search(self.textInput.get("1.0", "end").strip())))
+        self.searchBTN = tk.Button(
+        self, 
+        text="Search", 
+        command=lambda: controller.do_long_task(
+            lambda: controller.search(self.textInput.get("1.0", "end").strip())  # This is sorta scuffed, I'll DEFINITELY tidy it later.. /s
+        )
+        )
 
         self.file.grid(row=1, column=0)
         self.fileSelector.grid(row=0, column=0)
@@ -48,6 +54,7 @@ class Controls(ttk.Frame):
         self.browsersVerboseBTN.grid(row=0, column=3)
         self.browsersBTN.grid(row=1, column=3)
         self.readerProfileBTN.grid(row=0, column=4)
+        self.alsoLikesBTN.grid(row=2, column=1)
         self.globalUUID.grid(row=0, column=5)
         self.textInput.grid(row=1, column=5)
         self.searchBTN.grid(row=2, column=5)

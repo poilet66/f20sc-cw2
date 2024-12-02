@@ -46,6 +46,11 @@ class Controller:
             df = self.data_controller.top_browsers(verbose)
             self.viewer.plot_bargraph(df, df.columns[0], df.columns[1], title="Viewage by Browser Agent")
 
+    def plot_top_readers(self):
+        if self.viewer:
+            df = self.data_controller.top_k_readers(10)
+            self.viewer.plot_bargraph(df, df.columns[0], df.columns[1], title="Top 10 Readers by Read Time")
+
     def on_file_change(self, new_file_path):
         self.data_controller.change_file(new_file_path)
 
@@ -81,12 +86,15 @@ class Controller:
                 self.plot_browsers(verbose=False)
             case "Browser-Verbose":
                 self.plot_browsers(verbose=True)
+            case "Top-Readers":
+                self.plot_top_readers()
             case "graphviz":
                 self.display_graph()
             case _:
                 return "Something's wrong with the internet"
 
     def do_long_task(self, task: Callable):
+        print('doing long task')
         # disable controls
         if self.controls:
             self.controls.disable()

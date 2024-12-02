@@ -128,3 +128,39 @@ class DataController:
         image = Image.open(io.BytesIO(png))
 
         return np.array(image)
+    
+    def top_k_readers(self, k) -> pd.DataFrame:
+        working_df = self.df.copy() # make sure to avoid ref bugs
+
+        if not self.global_toggled and self.document_uuid is not None:
+            working_df = working_df[working_df['env_doc_id'] == self.document_uuid]
+
+        """
+        To track the duration of the reading session the read time events are transmitted at increasing time intervals starting after 2 seconds. 
+        The readtime field in the event indicates the time in milliseconds elapsed since last event. 
+
+        This means that we need to use the 'pagereadtime' event. We can sum these to get a user's read time for a document. However, we must also remember
+        to add 2000 milliseconds (2 seconds) to each sum, to account for the time elapsed before the first event
+        """
+
+        # filter to only 'pagereadtime' events
+        working_df = working_df[working_df['event_type'] == 'pagereadtime']
+
+        # convert readtime from millis to seconds
+        working_df['read_time_seconds'] = working_df['event_readtime'] / 1000
+
+        # group by user/doc reading, sum read time once grouped
+        reader_times = working_df.groupby(['visitor_uuid', 'env_doc_id'])['read_time_seconds'].sum().reset_index()
+
+        # Only display last 4 chars of each user id
+        reader_times['visitor_uuid'] = reader_times['visitor_uuid'].str[-4:]
+
+        # account for initial 2 seconds
+        reader_times['read_time_seconds'] += 2
+
+        return (
+            reader_times[['visitor_uuid', 'read_time_seconds']]
+            .sort_values('read_time_seconds', ascending=False)
+            .head(k)
+            .round() # round to whole numbers
+        )
