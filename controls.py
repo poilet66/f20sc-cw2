@@ -38,9 +38,9 @@ class Controls(ttk.Frame):
         self.globalUUID.select()
         self.textInput = tk.Text(self, height=1, width=20)
         self.searchBTN = tk.Button(
-        self, 
-        text="Search", 
-        command=lambda: controller.do_long_task(lambda: controller.search(self.textInput.get("1.0", "end").strip()))  # This is sorta scuffed, I'll DEFINITELY tidy it later.. /s
+            self, 
+            text="Search", 
+            command=lambda: controller.do_long_task(lambda: controller.search(self.textInput.get("1.0", "end").strip()))  # This is sorta scuffed, I'll DEFINITELY tidy it later.. /s
         )
 
         self.file.grid(row=1, column=0)
