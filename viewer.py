@@ -10,6 +10,8 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from matplotlib.backends._backend_tk import NavigationToolbar2Tk
 
 
+import numpy as np
+
 class Viewer(ttk.Frame):
 
     def __init__(self, parent: tk.Misc, controller: Controller):
@@ -58,3 +60,9 @@ class Viewer(ttk.Frame):
         self.canvas.draw()
         self.toolbar.update()
 
+    def plot_image(self, image: np.ndarray) -> None:
+        self.plot1.clear()
+        self.plot1.imshow(image)
+        self.plot1.axis('off')
+        self.canvas.draw()
+        self.toolbar.update()

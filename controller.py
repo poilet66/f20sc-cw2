@@ -80,6 +80,8 @@ class Controller:
                 self.plot_browsers(verbose=False)
             case "Browser-Verbose":
                 self.plot_browsers(verbose=True)
+            case "graphviz":
+                self.display_graph()
             case _:
                 return "Something's wrong with the internet"
 
@@ -105,3 +107,8 @@ class Controller:
         print("starting")
         time.sleep(1)
         print("finishing")
+
+    def display_graph(self):
+        if self.viewer:
+            graph_image = self.data_controller.image_from_graph(self.data_controller.get_test_graph()) # get image data from test graph
+            self.viewer.plot_image(graph_image)

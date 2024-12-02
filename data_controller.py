@@ -2,6 +2,11 @@ import pandas as pd
 import re
 from typing import Optional
 
+import graphviz
+from PIL import Image
+import io
+import numpy as np
+
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from controller import Controller
@@ -103,3 +108,23 @@ class DataController:
         else:
             return "Unknown"
 
+    def get_test_graph(self) -> graphviz.Digraph:
+        graph = graphviz.Digraph()
+
+        graph.attr(rankdir='LR')
+
+        graph.node('A', 'Node A')
+        graph.node('B', 'Node B')
+        graph.node('C', 'Node C')
+
+        graph.edge('A', 'B')
+        graph.edge('B', 'C')
+        graph.edge('C', 'A')
+
+        return graph
+    
+    def image_from_graph(self, graph: graphviz.Digraph) -> np.ndarray:
+        png = graph.pipe(format='png')
+        image = Image.open(io.BytesIO(png))
+
+        return np.array(image)
