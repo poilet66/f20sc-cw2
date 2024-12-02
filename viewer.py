@@ -62,12 +62,9 @@ class Viewer(ttk.Frame):
         self.canvas.draw()
         self.toolbar.update()
 
-    def plot_image(self, image: ImageTk) -> None:
-        self.canvas.create_image(
-            400, 300,
-            image=image,
-            anchor='center'
-        )
-
+    def plot_image(self, image) -> None:
+        self.plot1.clear()
+        self.plot1.imshow(image)
+        self.plot1.axis('off')
         self.canvas.draw()
         self.toolbar.update()

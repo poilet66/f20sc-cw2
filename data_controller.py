@@ -5,6 +5,7 @@ from typing import Optional
 import graphviz
 from PIL import ImageTk, Image
 import io
+import numpy as np
 
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
@@ -122,8 +123,8 @@ class DataController:
 
         return graph
     
-    def image_from_graph(self, graph: graphviz.Digraph) -> ImageTk:
+    def image_from_graph(self, graph: graphviz.Digraph) -> np.ndarray:
         png = graph.pipe(format='png')
         image = Image.open(io.BytesIO(png))
 
-        return ImageTk.PhotoImage(image)
+        return np.array(image)
