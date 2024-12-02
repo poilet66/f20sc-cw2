@@ -37,7 +37,7 @@ class Controls(ttk.Frame):
         self.globalUUID = tk.Checkbutton(self, text="global", command=controller.toggle_global) # select to toggle by default
         self.globalUUID.select()
         self.textInput = tk.Text(self, height=1, width=20)
-        self.searchBTN = tk.Button(self, text="Search", command=controller.search)
+        self.searchBTN = tk.Button(self, text="Search", command=lambda: controller.do_long_task(controller.search(self.textInput.get("1.0", "end").strip())))
 
         self.file.grid(row=1, column=0)
         self.fileSelector.grid(row=0, column=0)

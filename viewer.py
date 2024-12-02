@@ -66,3 +66,4 @@ class Viewer(ttk.Frame):
         self.plot1.axis('off')
         self.canvas.draw()
         self.toolbar.update()
+        self.plot1.figure.clf()

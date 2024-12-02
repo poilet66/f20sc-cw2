@@ -51,13 +51,9 @@ class Controller:
 
     def toggle_global(self):
         self.data_controller.global_toggled = not self.data_controller.global_toggled
+        print(f'global: {self.data_controller.global_toggled}')
 
-    def search_doc(self):
-        inputted_doc_id = self.controls.textInput.get("1.0", "end").strip()
-        if inputted_doc_id is not None and inputted_doc_id != "": # If doc id provided
-            self.data_controller.set_document_filter(inputted_doc_id)
-
-    def search(self):
+    def search(self, inputted_doc_id: Optional[str]):
         if not self.viewer:
             return
 
@@ -65,6 +61,11 @@ class Controller:
             # TODO: popup
             print("no data selected")
             return
+        
+        # Set data_controller doc_id if necessary
+        if inputted_doc_id is not None and inputted_doc_id != "": # If doc id provided
+            self.data_controller.set_document_filter(inputted_doc_id)
+            print(f'doc id set to: {inputted_doc_id}')
 
         # TODO: Enum
         match self.mode:
