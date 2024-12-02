@@ -3,7 +3,7 @@ import re
 from typing import Optional
 
 import graphviz
-from PIL import ImageTk, Image
+from PIL import Image
 import io
 import numpy as np
 

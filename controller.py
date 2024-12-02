@@ -8,7 +8,6 @@ from typing import TYPE_CHECKING, Optional, Callable
 if TYPE_CHECKING:
     from viewer import Viewer 
     from controls import Controls
-    from PIL import ImageTk
 
 class Controller:
     def __init__(self):
