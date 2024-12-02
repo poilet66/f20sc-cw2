@@ -113,11 +113,11 @@ class DataController:
 
         graph.attr(rankdir='LR')
 
-        graph.node('A', 'Node A')
+        graph.node('A', 'Node A', style='filled', fillcolor='green')
         graph.node('B', 'Node B')
         graph.node('C', 'Node C')
 
-        graph.edge('A', 'B')
+        graph.edge('A', 'B', style='filled', fillcolor='green')
         graph.edge('B', 'C')
         graph.edge('C', 'A')
 
