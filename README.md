@@ -15,7 +15,7 @@ Python Data Analysis of Document Tracker
 - [ ] Document querying
   - [x] By country
   - [x] By continent
-  - [ ] By browser
+  - [x] By browser
   - [ ] Top 10 readers
 - [ ] 'Also likes' functionality
   - [ ] 'Also likes' graph
