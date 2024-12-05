@@ -1,4 +1,4 @@
-from cmdline import CommandLineHandler
+from command_line.cmdline import CommandLineHandler
 from window import Application
 
 if __name__ == "__main__":

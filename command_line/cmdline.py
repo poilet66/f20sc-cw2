@@ -1,38 +1,6 @@
 import argparse
 import data_controller
-import re
-
-
-class ArgTypes:
-    @staticmethod
-    def task_type(value: str):
-        if value not in ["2a", "2b", "3a", "3b", "4", "5d", "6", "7"]:
-            raise argparse.ArgumentTypeError(f"Invalid task: {value}")
-        return value
-
-    @staticmethod
-    def user_uuid_type(value: str):
-        # TODO
-        pattern = r"^.*$"
-        if not re.match(pattern, value):
-            raise argparse.ArgumentTypeError(f"Invalid task: {value}")
-        return value
-
-    @staticmethod
-    def doc_uuid_type(value: str):
-        # TODO
-        pattern = r"^.*$"
-        if not re.match(pattern, value):
-            raise argparse.ArgumentTypeError(f"Invalid task: {value}")
-        return value
-
-    @staticmethod
-    def file_name_type(value: str):
-        # TODO
-        pattern = r"^.*$"
-        if not re.match(pattern, value):
-            raise argparse.ArgumentTypeError(f"Invalid task: {value}")
-        return value
+from command_line.arg_types import ArgTypes
 
 
 class CommandLineHandler:
@@ -54,7 +22,8 @@ class CommandLineHandler:
         return self.args["t"] is not None
 
     def run(self):
-
+        if self.args["f"] is None:
+            raise argparse.ArgumentError(None, "Missing file argument")
         self.data_controller.change_file(self.args["f"])
 
         match self.args["t"]:
@@ -97,11 +66,11 @@ class CommandLineHandler:
         df = self.data_controller.top_k_readers(10)
         print(df)
 
-    def q5d(self):
+    def q5d(self) -> None:
         raise NotImplementedError
 
-    def q6(self):
+    def q6(self) -> None:
         raise NotImplementedError
 
-    def q7(self):
+    def q7(self) -> None:
         raise NotImplementedError
