@@ -1,5 +1,12 @@
+from cmdline import CommandLineHandler
 from window import Application
 
 if __name__ == "__main__":
-    app = Application()
-    app.mainloop()
+
+    cmdline = CommandLineHandler()
+
+    if cmdline.has_args():
+        cmdline.run()
+    else:
+        app = Application()
+        app.mainloop()
