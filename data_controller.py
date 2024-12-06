@@ -108,7 +108,49 @@ class DataController:
         else:
             return "Unknown"
 
-    def get_test_graph(self) -> graphviz.Digraph:
+    def get_test_graph(self, user_id: str, doc_id: str) -> graphviz.Digraph:
+
+        # current user, document
+
+        # get K OTHER top users from same document
+
+        # get their top L read documents exclude current doc
+
+        working_df: pd.DataFrame = self.df.copy()
+
+        working_df = working_df[working_df['env_doc_id'] == self.document_uuid]
+
+        # Filter out search user when generating other user profiles
+        top_other_readers = working_df[working_df['visitor_uuid'] != user_id]
+
+        # Get top K other readers (we'll hardcode 4 for now)
+        top_other_readers = self.top_k_readers(4 + 1, doc_id=doc_id)
+
+        # filter out user if they happen to be in top readers, otherwise remove bottom reader
+        if user_id in top_other_readers['visitor_uuid'].values:
+            top_other_readers = top_other_readers[top_other_readers['visitor_uuid'] != user_id]
+        else:
+            top_other_readers = top_other_readers.head(3)
+
+        print(f'other top reader length: {len(top_other_readers)}')
+
+        users_top_docs = {}
+
+        # iterate through readers
+        for _, row in top_other_readers.iterrows():
+            print(f'getting top docs for user: {row["visitor_uuid"]}')
+            # get top documents for user
+            user_top_docs = self.top_k_documents(4, row['visitor_uuid'])
+            
+            # Check if doc_id present
+            if doc_id in user_top_docs['env_doc_id'].values:
+                user_top_docs = user_top_docs[user_top_docs['env_doc_id'] != doc_id]
+            
+            users_top_docs[row['visitor_uuid']] = user_top_docs.head(3)
+
+        print(users_top_docs) 
+
+
         graph = graphviz.Digraph()
 
         graph.attr(rankdir='LR')
@@ -129,10 +171,12 @@ class DataController:
 
         return np.array(image)
     
-    def top_k_readers(self, k) -> pd.DataFrame:
+    def top_k_readers(self, k, doc_id = None) -> pd.DataFrame:
         working_df = self.df.copy() # make sure to avoid ref bugs
 
-        if not self.global_toggled and self.document_uuid is not None:
+        if doc_id is not None:
+            working_df = working_df[working_df['visitor_uuid'] == doc_id]
+        elif not self.global_toggled and self.document_uuid is not None:
             working_df = working_df[working_df['env_doc_id'] == self.document_uuid]
 
         """
@@ -163,4 +207,32 @@ class DataController:
             .sort_values('read_time_seconds', ascending=False)
             .head(k)
             .round() # round to whole numbers
+        )
+    
+    def top_k_documents(self, k, user_id) -> pd.DataFrame:
+        """
+        Get the top K document id's that user `user_id` has read
+        """
+        working_df: pd.DataFrame = self.df.copy()
+
+        # filter to user
+        working_df = working_df[working_df['visitor_uuid'] == user_id]
+        
+        # filter to only 'pagereadtime' events
+        working_df = working_df[working_df['event_type'] == 'pagereadtime']
+        
+        # convert readtime from millis to seconds
+        working_df['read_time_seconds'] = working_df['event_readtime'] / 1000
+        
+        # group by doc id, sum read time once grouped
+        doc_times = working_df.groupby('env_doc_id')['read_time_seconds'].sum().reset_index()
+        
+        # account for initial 2 seconds
+        doc_times['read_time_seconds'] += 2
+        
+        return (
+            doc_times[['env_doc_id', 'read_time_seconds']]
+            .sort_values('read_time_seconds', ascending=False)
+            .head(k)
+            .round()
         )

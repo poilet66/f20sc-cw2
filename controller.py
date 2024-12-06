@@ -119,5 +119,5 @@ class Controller:
 
     def display_graph(self):
         if self.viewer:
-            graph_image = self.data_controller.image_from_graph(self.data_controller.get_test_graph()) # get image data from test graph
+            graph_image = self.data_controller.image_from_graph(self.data_controller.get_test_graph(user_id='3e92caf3e56ad750', doc_id='130824023411-ac90acabcb403cebc8024fa0c418f403')) # get image data from test graph
             self.viewer.plot_image(graph_image)
