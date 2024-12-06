@@ -11,7 +11,7 @@ class ArgTypes:
     def user_uuid_type(value: str):
         pattern = r"^[a-z0-9]{16}$"
         if not re.match(pattern, value):
-            raise argparse.ArgumentTypeError(f"Invalid task: {value}")
+            raise argparse.ArgumentTypeError(f"Invalid user uuid: {value}")
         return value
 
     @staticmethod
@@ -19,7 +19,7 @@ class ArgTypes:
         # TODO
         pattern = r"^.*$"
         if not re.match(pattern, value):
-            raise argparse.ArgumentTypeError(f"Invalid task: {value}")
+            raise argparse.ArgumentTypeError(f"Invalid doc uuid: {value}")
         return value
 
     @staticmethod
@@ -27,6 +27,6 @@ class ArgTypes:
         # TODO
         pattern = r"^.*$"
         if not re.match(pattern, value):
-            raise argparse.ArgumentTypeError(f"Invalid task: {value}")
+            raise argparse.ArgumentTypeError(f"Invalid file name: {value}")
         return value
 
