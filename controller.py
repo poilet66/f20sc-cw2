@@ -9,17 +9,24 @@ if TYPE_CHECKING:
     from viewer import Viewer 
     from controls import Controls
 
+
+class Modes:
+    RND = "RND"
+    SQR = "SQR"
+    Q2A = "Q2A"
+    Q2B = "Q2B"
+    Q3A = "Q3A"
+    Q3B = "Q3B"
+    Q4 = "Q4"
+    Q5 = "Q5"
+    Q6 = "Q6"
+
 class Controller:
     def __init__(self):
         self.viewer: Optional["Viewer"] = None
         self.controls: Optional["Controls"] = None
         self.data_controller = DataController()
 
-        self.mode = "Square"
-
-    def set_mode(self, mode: str):
-        print(f"setting mode: {mode}")
-        self.mode = mode
 
     def register_controls(self, controls: "Controls"):
         self.controls = controls
@@ -62,7 +69,7 @@ class Controller:
         # TODO remove
         time.sleep(1) # emulate long task
 
-        if not self.viewer:
+        if not (self.viewer and self.controls):
             return
 
         # TODO uncomment
@@ -77,22 +84,22 @@ class Controller:
             print(f'doc id set to: {inputted_doc_id}')
 
         # TODO: Enum
-        match self.mode:
-            case "Random":
+        match self.controls.mode.get():
+            case Modes.RND:
                 self.viewer.plot([random.random() for _ in range(121)])
-            case "Square":
+            case Modes.SQR:
                 self.viewer.plot([i**2 for i in range(121)])
-            case "country":
+            case Modes.Q2A:
                 self.plot_countries()
-            case "Continent":
+            case Modes.Q2B:
                 self.plot_continents()
-            case "Browser":
+            case Modes.Q3A:
                 self.plot_browsers(verbose=False)
-            case "Browser-Verbose":
+            case Modes.Q4:
                 self.plot_browsers(verbose=True)
-            case "Top-Readers":
+            case Modes.Q5:
                 self.plot_top_readers()
-            case "graphviz":
+            case Modes.Q6:
                 self.display_graph()
             case _:
                 return "Something's wrong with the internet"
