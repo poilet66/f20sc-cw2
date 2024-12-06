@@ -1,6 +1,7 @@
 import argparse
 import data_controller
 from command_line.arg_types import ArgTypes
+from command_line.tabulate import print_bar
 
 
 class CommandLineHandler:
@@ -48,23 +49,23 @@ class CommandLineHandler:
 
     def q2a(self):
         df = self.data_controller.top_k_countries(10)
-        print(df)
+        print_bar(df, "visitor_country", "count")
 
     def q2b(self):
         df = self.data_controller.top_continents()
-        print(df)
+        print_bar(df, "visitor_continent", "count")
 
     def q3a(self):
         df = self.data_controller.top_browsers(True)
-        print(df)
+        print_bar(df, "visitor_useragent", "count")
 
     def q3b(self):
         df = self.data_controller.top_browsers(False)
-        print(df)
+        print_bar(df, "visitor_useragent_grouped", "count")
 
     def q4(self):
         df = self.data_controller.top_k_readers(10)
-        print(df)
+        print_bar(df, "visitor_uuid", "read_time_seconds")
 
     def q5d(self) -> None:
         raise NotImplementedError
