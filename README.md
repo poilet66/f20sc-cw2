@@ -19,6 +19,6 @@ Python Data Analysis of Document Tracker
   - [x] Top 10 readers
 - [ ] 'Also likes' functionality
   - [ ] 'Also likes' graph
-- [ ] Command line usage
+- [x] Command line usage
 - [ ] Graphing interface / Library ?
 
