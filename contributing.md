@@ -43,7 +43,7 @@ python main.py
 This will bring up the graphical user interface.
 
 ### Running the command line interface
-Simply invoke the same way but with flags. The program will automatcially determine which mode to run in
+Simply invoke the same way but with flags. The program will automatically determine which mode to run in
 
 ```
 python main.py -t 2a -f file.json
