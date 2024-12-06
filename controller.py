@@ -59,10 +59,14 @@ class Controller:
         print(f'global: {self.data_controller.global_toggled}')
 
     def search(self, inputted_doc_id: Optional[str]):
+        # TODO remove
+        time.sleep(1) # emulate long task
+
         if not self.viewer:
             return
 
-        if not self.data_controller.has_file():
+        # TODO uncomment
+        #if not self.data_controller.has_file():
             # TODO: popup
             print("no data selected")
             return
