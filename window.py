@@ -18,7 +18,7 @@ class Application(tk.Tk):
 
 
         self.controls = Controls(self, self.controller)
-        self.controls.grid(sticky="ew")
+        self.controls.grid(sticky="ew", padx=5, pady=5)
 
         self.viewer: Viewer = Viewer(self, self.controller)
         self.viewer.grid(sticky="nsew")

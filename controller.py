@@ -81,7 +81,7 @@ class Controller:
             return
 
         if not self.data_controller.has_file():
-            self.controls.display_status("no data selected!")
+            self.controls.display_status("No data selected!")
             return
         
         match self.controls.mode.get():
