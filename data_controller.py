@@ -110,29 +110,17 @@ class DataController:
 
     def get_test_graph(self, user_id: str, doc_id: str) -> graphviz.Digraph:
 
-        # current user, document
-
-        # get K OTHER top users from same document
-
-        # get their top L read documents exclude current doc
-
         working_df: pd.DataFrame = self.df.copy()
 
-        working_df = working_df[working_df['env_doc_id'] == self.document_uuid]
-
         # Filter out search user when generating other user profiles
-        top_other_readers = working_df[working_df['visitor_uuid'] != user_id]
+        print(working_df.iloc[0]['visitor_uuid'])
+
+        # remove search user, doc from these dfs so they wont be in the return of sub functions
+        top_other_readers_df = working_df[working_df['visitor_uuid'] != user_id]
+        other_docs_df = working_df[working_df['env_doc_id'] != doc_id]
 
         # Get top K other readers (we'll hardcode 4 for now)
-        top_other_readers = self.top_k_readers(4 + 1, doc_id=doc_id)
-
-        # filter out user if they happen to be in top readers, otherwise remove bottom reader
-        if user_id in top_other_readers['visitor_uuid'].values:
-            top_other_readers = top_other_readers[top_other_readers['visitor_uuid'] != user_id]
-        else:
-            top_other_readers = top_other_readers.head(3)
-
-        print(f'other top reader length: {len(top_other_readers)}')
+        top_other_readers = self.top_k_readers(4, doc_id=doc_id, df=top_other_readers_df)
 
         users_top_docs = {}
 
@@ -140,28 +128,30 @@ class DataController:
         for _, row in top_other_readers.iterrows():
             print(f'getting top docs for user: {row["visitor_uuid"]}')
             # get top documents for user
-            user_top_docs = self.top_k_documents(4, row['visitor_uuid'])
+            user_top_docs = self.top_k_documents(4, row['visitor_uuid'], df=other_docs_df)
             
-            # Check if doc_id present
-            if doc_id in user_top_docs['env_doc_id'].values:
-                user_top_docs = user_top_docs[user_top_docs['env_doc_id'] != doc_id]
-            
-            users_top_docs[row['visitor_uuid']] = user_top_docs.head(3)
+            users_top_docs[row['visitor_uuid']] = list(user_top_docs['env_doc_id'])
 
         print(users_top_docs) 
 
 
         graph = graphviz.Digraph()
 
-        graph.attr(rankdir='LR')
+        graph.attr(rankdir='TB')
 
-        graph.node('A', 'Node A', style='filled', fillcolor='green')
-        graph.node('B', 'Node B')
-        graph.node('C', 'Node C')
+        graph.node(doc_id, doc_id[-4:], style='filled', fillcolor='green')
+        graph.node(user_id, user_id[-4:], style='filled', fillcolor='green')
 
-        graph.edge('A', 'B', style='filled', fillcolor='green')
-        graph.edge('B', 'C')
-        graph.edge('C', 'A')
+        graph.edge(user_id, doc_id, style='filled', fillcolor='green')
+
+        for other_user_id in users_top_docs.keys():
+            # create user node
+            graph.node(other_user_id, other_user_id[-4:])
+            for other_user_doc in users_top_docs.get(other_user_id):
+                # create user doc node and edge to it from user
+                graph.node(other_user_doc, other_user_doc[-4:])
+                graph.edge(other_user_id, doc_id)
+                graph.edge(other_user_id, other_user_doc)
 
         return graph
     
@@ -171,11 +161,15 @@ class DataController:
 
         return np.array(image)
     
-    def top_k_readers(self, k, doc_id = None) -> pd.DataFrame:
-        working_df = self.df.copy() # make sure to avoid ref bugs
+    def top_k_readers(self, k, doc_id = None, df = None) -> pd.DataFrame:
+
+        if df is None:
+            working_df = self.df.copy() # make sure to avoid ref bugs
+        else:
+            working_df = df
 
         if doc_id is not None:
-            working_df = working_df[working_df['visitor_uuid'] == doc_id]
+            working_df = working_df[working_df['env_doc_id'] == doc_id]
         elif not self.global_toggled and self.document_uuid is not None:
             working_df = working_df[working_df['env_doc_id'] == self.document_uuid]
 
@@ -197,7 +191,7 @@ class DataController:
         reader_times = working_df.groupby(['visitor_uuid', 'env_doc_id'])['read_time_seconds'].sum().reset_index()
 
         # Only display last 4 chars of each user id
-        reader_times['visitor_uuid'] = reader_times['visitor_uuid'].str[-4:]
+        # TODO: Move this to only representation part reader_times['visitor_uuid'] = reader_times['visitor_uuid'].str[-4:]
 
         # account for initial 2 seconds
         reader_times['read_time_seconds'] += 2
@@ -209,11 +203,15 @@ class DataController:
             .round() # round to whole numbers
         )
     
-    def top_k_documents(self, k, user_id) -> pd.DataFrame:
+    def top_k_documents(self, k, user_id, df = None) -> pd.DataFrame:
         """
         Get the top K document id's that user `user_id` has read
         """
-        working_df: pd.DataFrame = self.df.copy()
+
+        if df is None:
+            working_df: pd.DataFrame = self.df.copy()
+        else:
+            working_df = df
 
         # filter to user
         working_df = working_df[working_df['visitor_uuid'] == user_id]
