@@ -21,7 +21,7 @@ class Controls(ttk.Frame):
         self.q_buttons: list[Button | RadioButton] = []
 
         self.fileSelector = SelectFile(self, controller.on_file_change)
-        self.file = tk.Text(self, height=1, width=20)
+        self.status = tk.Label(self, text="Select File", height=1, width=20)
 
         self.randomBTN = RadioButton(self, text="random button", variable=self.mode, value=Modes.RND)
         self.squareBTN = RadioButton(self, text="square button", variable=self.mode, value=Modes.SQR)
@@ -57,7 +57,7 @@ class Controls(ttk.Frame):
             command=lambda: controller.do_long_task(lambda: controller.search(self.textInput.get("1.0", "end").strip()))  # This is sorta scuffed, I'll DEFINITELY tidy it later.. /s
         )
 
-        self.file.grid(row=1, column=0)
+        self.status.grid(row=1, column=0)
         self.fileSelector.grid(row=0, column=0)
         self.randomBTN.grid(row=0, column=1, sticky="w")
         self.squareBTN.grid(row=1, column=1, sticky="w")
@@ -72,7 +72,6 @@ class Controls(ttk.Frame):
         self.searchBTN.grid(row=2, column=5, sticky="w")
 
     def disable(self):
-        self.file.config(state=tk.DISABLED)
         self.fileSelector.config(state=tk.DISABLED)
         list(map(lambda x: x.set_enable(False), self.q_buttons)) # looks a bit jank ik
         self.globalUUID.config(state=tk.DISABLED)
@@ -86,9 +85,11 @@ class Controls(ttk.Frame):
         self.searchBTN.config(state=tk.NORMAL)
 
     def enable(self):
-        self.file.config(state=tk.NORMAL)
         self.fileSelector.config(state=tk.NORMAL)
         list(map(lambda x: x.set_enable(True), self.q_buttons)) # looks a bit jank ik
         self.globalUUID.config(state=tk.NORMAL)
         self.textInput.config(state=tk.NORMAL)
         self.searchBTN.config(state=tk.NORMAL)
+
+    def display_status(self, message: str):
+        self.status.config(text=message)

@@ -33,11 +33,14 @@ class DataController:
     def set_document_filter(self, document_uuid) -> None:
         self.document_uuid = document_uuid
 
-    def path_to_pd(self, file_path) -> pd.DataFrame:
+    def path_to_pd(self, file_path: str) -> pd.DataFrame:
         
-        df =  pd.read_json(file_path, lines=True)
+        df_all = pd.DataFrame()
 
-        return df
+        for chunk in pd.read_json(file_path, lines=True, chunksize=1000000):
+            df_all = pd.concat([df_all, chunk], ignore_index=True)
+
+        return df_all
 
     def top_k_countries(self, k: int) -> pd.DataFrame:
         """

@@ -59,7 +59,8 @@ class Controller:
             self.viewer.plot_bargraph(df, df.columns[0], df.columns[1], title="Top 10 Readers by Read Time")
 
     def on_file_change(self, new_file_path):
-        self.data_controller.change_file(new_file_path)
+        self.controls.display_status("Loading file...")
+        self.do_long_task(lambda: self.data_controller.change_file(new_file_path), lambda: self.controls.display_status("File Loaded"))
 
     def toggle_global(self):
         self.data_controller.global_toggled = not self.data_controller.global_toggled
@@ -67,7 +68,7 @@ class Controller:
 
     def search(self, inputted_doc_id: Optional[str]):
         # TODO remove
-        time.sleep(1) # emulate long task
+        #time.sleep(1) # emulate long task
 
         if not (self.viewer and self.controls):
             return
@@ -104,8 +105,7 @@ class Controller:
             case _:
                 return "Something's wrong with the internet"
 
-    def do_long_task(self, task: Callable):
-        print('doing long task')
+    def do_long_task(self, task: Callable, callback: Optional[Callable[[], None]] = None):
         # disable controls
         if self.controls:
             self.controls.disable()
@@ -119,6 +119,8 @@ class Controller:
             # enable controls
             if self.controls:
                 self.controls.enable()
+            if callback:
+                callback()
         
         # Start the checker thread
         threading.Thread(target=check_completion).start()
