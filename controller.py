@@ -94,13 +94,15 @@ class Controller:
             case Modes.Q2B:
                 self.plot_continents()
             case Modes.Q3A:
+                self.plot_browsers(verbose=True)
+            case Modes.Q3B:
                 self.plot_browsers(verbose=False)
             case Modes.Q4:
-                self.plot_browsers(verbose=True)
-            case Modes.Q5:
                 self.plot_top_readers()
+            case Modes.Q5:
+                raise NotImplemented()
             case Modes.Q6:
-                self.display_graph()
+                raise NotImplemented()
             case _:
                 pass
 

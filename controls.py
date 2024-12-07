@@ -26,7 +26,7 @@ class Controls(ttk.Frame):
         self.q_buttons: list[RadioButton] = []
 
         self.fileSelector = SelectFile(self, controller.on_file_change)
-        self.status = tk.Label(self, text="Select File", height=1, width=20)
+        self.status = tk.Label(self, text="Select File", height=3, width=20, wraplength=200, justify="center")
 
         self.center_frame = ttk.Frame(self)
 
