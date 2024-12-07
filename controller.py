@@ -58,7 +58,7 @@ class Controller:
             df = self.data_controller.top_k_readers(10)
             self.viewer.plot_bargraph(df, df.columns[0], df.columns[1], title="Top 10 Readers by Read Time")
 
-    def on_file_change(self, new_file_path):
+    def on_file_change(self, new_file_path: str):
         self.controls.display_status("Loading file...")
         self.do_long_task(lambda: self.data_controller.change_file(new_file_path), lambda: self.controls.display_status("File Loaded"))
 
@@ -66,25 +66,24 @@ class Controller:
         self.data_controller.global_toggled = not self.data_controller.global_toggled
         print(f'global: {self.data_controller.global_toggled}')
 
-    def search(self, inputted_doc_id: Optional[str]):
-        # TODO remove
-        #time.sleep(1) # emulate long task
+    def search(self, ids: tuple[str, str]) -> None:
+        doc_id, user_id = ids
+
+        if doc_id != "":
+            self.data_controller.set_document_filter(doc_id)
+
+        if user_id != "":
+            self.data_controller.set_user_filter(user_id)
+
+
 
         if not (self.viewer and self.controls):
             return
 
-        # TODO uncomment
-        #if not self.data_controller.has_file():
-            # TODO: popup
-            print("no data selected")
+        if not self.data_controller.has_file():
+            self.controls.display_status("no data selected!")
             return
         
-        # Set data_controller doc_id if necessary
-        if inputted_doc_id is not None and inputted_doc_id != "": # If doc id provided
-            self.data_controller.set_document_filter(inputted_doc_id)
-            print(f'doc id set to: {inputted_doc_id}')
-
-        # TODO: Enum
         match self.controls.mode.get():
             case Modes.RND:
                 self.viewer.plot([random.random() for _ in range(121)])
@@ -103,9 +102,9 @@ class Controller:
             case Modes.Q6:
                 self.display_graph()
             case _:
-                return "Something's wrong with the internet"
+                pass
 
-    def do_long_task(self, task: Callable, callback: Optional[Callable[[], None]] = None):
+    def do_long_task(self, task: Callable[[], None], callback: Optional[Callable[[], None]] = None):
         # disable controls
         if self.controls:
             self.controls.disable()

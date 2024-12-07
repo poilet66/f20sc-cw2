@@ -4,6 +4,7 @@ import tkinter as tk
 from components.file_select import SelectFile
 from components.button import Button
 from components.radio_button import RadioButton
+from components.text import Text
 from controller import Controller, Modes
 
 
@@ -48,13 +49,12 @@ class Controls(ttk.Frame):
         self.alsoLikesBTN = RadioButton(self, text="Also likes", variable=self.mode, value=Modes.Q5)
         self.q_buttons.append(self.alsoLikesBTN)
 
-        self.globalUUID = tk.Checkbutton(self, text="global", command=controller.toggle_global) # select to toggle by default
-        self.globalUUID.select()
-        self.textInput = tk.Text(self, height=1, width=20)
-        self.searchBTN = tk.Button(
+        self.docUUID = Text(self, placeholder="documnet UUID")
+        self.userUUID = Text(self, placeholder="user UUID")
+        self.searchBTN = Button(
             self, 
             text="Search", 
-            command=lambda: controller.do_long_task(lambda: controller.search(self.textInput.get("1.0", "end").strip()))  # This is sorta scuffed, I'll DEFINITELY tidy it later.. /s
+            command=lambda: controller.do_long_task(lambda: controller.search(self.get_ids()))  # This is sorta scuffed, I'll DEFINITELY tidy it later.. /s
         )
 
         self.status.grid(row=1, column=0)
@@ -67,15 +67,15 @@ class Controls(ttk.Frame):
         self.browsersBTN.grid(row=1, column=3, sticky="w")
         self.readerProfileBTN.grid(row=0, column=4, sticky="w")
         self.alsoLikesBTN.grid(row=2, column=1, sticky="w")
-        self.globalUUID.grid(row=0, column=5, sticky="w")
-        self.textInput.grid(row=1, column=5, sticky="w")
+        self.docUUID.grid(row=0, column=5, sticky="w")
+        self.userUUID.grid(row=1, column=5, sticky="w")
         self.searchBTN.grid(row=2, column=5, sticky="w")
 
     def disable(self):
         self.fileSelector.config(state=tk.DISABLED)
         list(map(lambda x: x.set_enable(False), self.q_buttons)) # looks a bit jank ik
-        self.globalUUID.config(state=tk.DISABLED)
-        self.textInput.config(state=tk.DISABLED)
+        self.userUUID.config(state=tk.DISABLED)
+        self.docUUID.config(state=tk.DISABLED)
         self.searchBTN.config(state=tk.DISABLED)
 
     def disable_search(self):
@@ -87,9 +87,12 @@ class Controls(ttk.Frame):
     def enable(self):
         self.fileSelector.config(state=tk.NORMAL)
         list(map(lambda x: x.set_enable(True), self.q_buttons)) # looks a bit jank ik
-        self.globalUUID.config(state=tk.NORMAL)
-        self.textInput.config(state=tk.NORMAL)
+        self.userUUID.config(state=tk.NORMAL)
+        self.docUUID.config(state=tk.NORMAL)
         self.searchBTN.config(state=tk.NORMAL)
 
     def display_status(self, message: str):
         self.status.config(text=message)
+
+    def get_ids(self) -> tuple[str, str]:
+        return (self.docUUID.get(), self.userUUID.get())

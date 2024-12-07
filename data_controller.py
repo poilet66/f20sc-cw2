@@ -17,8 +17,10 @@ class DataController:
 
         self.file_path: Optional[str] = None
         self.df = None
-        self.document_uuid = None
         self.global_toggled = True
+
+        self.user_uuid: Optional[str] = None
+        self.document_uuid: Optional[str] = None
 
     def has_file(self) -> bool:
         return self.file_path is not None
@@ -30,8 +32,11 @@ class DataController:
         self.file_path = file_path
         self.df = self.path_to_pd(file_path)
 
-    def set_document_filter(self, document_uuid) -> None:
+    def set_document_filter(self, document_uuid: str) -> None:
         self.document_uuid = document_uuid
+
+    def set_user_filter(self, user_uuid: str) -> None:
+        self.user_uuid = user_uuid
 
     def path_to_pd(self, file_path: str) -> pd.DataFrame:
         
