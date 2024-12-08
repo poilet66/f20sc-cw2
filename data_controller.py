@@ -140,13 +140,13 @@ class DataController:
         graph.attr(rankdir='TB')
 
         graph.node(doc_id, doc_id[-4:], style='filled', fillcolor='green')
-        graph.node(user_id, user_id[-4:], style='filled', fillcolor='green')
+        graph.node(user_id, user_id[-4:], style='filled', fillcolor='green', shape='box')
 
         graph.edge(user_id, doc_id, style='filled', fillcolor='green')
 
         for other_user_id in users_top_docs.keys():
             # create user node
-            graph.node(other_user_id, other_user_id[-4:])
+            graph.node(other_user_id, other_user_id[-4:], shape='box')
             for other_user_doc in users_top_docs.get(other_user_id):
                 # create user doc node and edge to it from user
                 graph.node(other_user_doc, other_user_doc[-4:])
@@ -191,7 +191,7 @@ class DataController:
         reader_times = working_df.groupby(['visitor_uuid', 'env_doc_id'])['read_time_seconds'].sum().reset_index()
 
         # Only display last 4 chars of each user id
-        # TODO: Move this to only representation part reader_times['visitor_uuid'] = reader_times['visitor_uuid'].str[-4:]
+        if df is None: reader_times['visitor_uuid'] = reader_times['visitor_uuid'].str[-4:] # TODO: Make this cleaner, currently just a workaround to not break this
 
         # account for initial 2 seconds
         reader_times['read_time_seconds'] += 2
