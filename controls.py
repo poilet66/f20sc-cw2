@@ -30,6 +30,7 @@ class Controls(ttk.Frame):
 
         self.center_frame = ttk.Frame(self)
 
+        # test buttons
         self.randomBTN = RadioButton(self.center_frame, text="Random Button", variable=self.mode, value=Modes.RND)
         self.squareBTN = RadioButton(self.center_frame, text="Square Button", variable=self.mode, value=Modes.SQR)
         self.q_buttons.append(self.randomBTN)

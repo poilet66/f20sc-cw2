@@ -13,11 +13,3 @@ class Button(ttk.Button):
             self.config(state=tk.NORMAL)
         else:
             self.config(state=tk.DISABLED)
-
-    def set_active(self, s: bool):
-        """ active is the current mode """
-        if s:
-            self.config(style=tk.ACTIVE)
-        else:
-            self.config(style=tk.ACTIVE)
-

@@ -34,8 +34,51 @@ class Controller:
     def register_viewer(self, viewer: "Viewer"):
         self.viewer = viewer
 
-    def register_data_controller(self, data_controller: "DataController"):
-        self.data_controller = data_controller
+    
+    ################################################################################
+    #                              Question Functions                              #
+    ################################################################################
+
+    def search(self, ids: tuple[str, str]) -> None:
+
+        if not (self.viewer and self.controls):
+            return
+
+        if not self.data_controller.has_file():
+            self.controls.display_status("No data selected!")
+            return
+
+        # check for search params
+        doc_id, user_id = ids
+
+        if doc_id != "":
+            self.data_controller.set_document_filter(doc_id)
+
+        if user_id != "":
+            self.data_controller.set_user_filter(user_id)
+
+
+        match self.controls.mode.get():
+            case Modes.RND:
+                self.viewer.plot([random.random() for _ in range(121)])
+            case Modes.SQR:
+                self.viewer.plot([i**2 for i in range(121)])
+            case Modes.Q2A:
+                self.plot_countries()
+            case Modes.Q2B:
+                self.plot_continents()
+            case Modes.Q3A:
+                self.plot_browsers(verbose=True)
+            case Modes.Q3B:
+                self.plot_browsers(verbose=False)
+            case Modes.Q4:
+                self.plot_top_readers()
+            case Modes.Q5:
+                raise NotImplemented()
+            case Modes.Q6:
+                raise NotImplemented()
+            case _:
+                pass
 
 
     def plot_countries(self):
@@ -66,45 +109,11 @@ class Controller:
         self.data_controller.global_toggled = not self.data_controller.global_toggled
         print(f'global: {self.data_controller.global_toggled}')
 
-    def search(self, ids: tuple[str, str]) -> None:
-        doc_id, user_id = ids
-
-        if doc_id != "":
-            self.data_controller.set_document_filter(doc_id)
-
-        if user_id != "":
-            self.data_controller.set_user_filter(user_id)
 
 
-
-        if not (self.viewer and self.controls):
-            return
-
-        if not self.data_controller.has_file():
-            self.controls.display_status("No data selected!")
-            return
-        
-        match self.controls.mode.get():
-            case Modes.RND:
-                self.viewer.plot([random.random() for _ in range(121)])
-            case Modes.SQR:
-                self.viewer.plot([i**2 for i in range(121)])
-            case Modes.Q2A:
-                self.plot_countries()
-            case Modes.Q2B:
-                self.plot_continents()
-            case Modes.Q3A:
-                self.plot_browsers(verbose=True)
-            case Modes.Q3B:
-                self.plot_browsers(verbose=False)
-            case Modes.Q4:
-                self.plot_top_readers()
-            case Modes.Q5:
-                raise NotImplemented()
-            case Modes.Q6:
-                raise NotImplemented()
-            case _:
-                pass
+    ################################################################################
+    #                               Helper Functions                               #
+    ################################################################################
 
     def do_long_task(self, task: Callable[[], None], callback: Optional[Callable[[], None]] = None):
         # disable controls
