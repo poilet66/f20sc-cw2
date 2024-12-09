@@ -12,13 +12,13 @@ class Text(tk.Entry):
         self.bind("<FocusIn>", self.on_focus_in)
         self.bind("<FocusOut>", self.on_focus_out)
 
-    def on_focus_in(self, _: 'tk.Event[tk.Entry]'):
+    def on_focus_in(self, _: "tk.Event[tk.Entry]"):
         # hide placeholder
         if self.get() == self.placeholder:
             self.delete(0, tk.END)
             self.config(fg="black")
 
-    def on_focus_out(self, _: 'tk.Event[tk.Entry]'):
+    def on_focus_out(self, _: "tk.Event[tk.Entry]"):
         # show placeholder
         if self.get() == "":
             self.insert(0, self.placeholder)

@@ -18,7 +18,6 @@ class DataController:
 
         self.file_path: Optional[str] = None
         self.df = None
-        self.global_toggled = True
 
         self.user_uuid: Optional[str] = None
         self.document_uuid: Optional[str] = None
@@ -34,9 +33,15 @@ class DataController:
         self.df = self.path_to_pd(file_path)
 
     def set_document_filter(self, document_uuid: str) -> None:
+        if document_uuid == "": 
+            self.document_uuid = None
+            return
         self.document_uuid = document_uuid
 
     def set_user_filter(self, user_uuid: str) -> None:
+        if user_uuid == "": 
+            self.document_uuid = None
+            return
         self.user_uuid = user_uuid
 
     def path_to_pd(self, file_path: str) -> pd.DataFrame:
@@ -54,9 +59,8 @@ class DataController:
         """
         working_df = self.df
 
-        # If we're not in global mode and valid uuid is provided
-        if not self.global_toggled and self.document_uuid is not None:
-
+        # If a valid uuid is provided
+        if self.document_uuid is not None:
             working_df = working_df[working_df['env_doc_id'] == self.document_uuid] # TODO: Add check here to ensure doc exists?
 
         return (
@@ -73,7 +77,7 @@ class DataController:
         working_df = self.df
         continent_df = pd.read_csv('data/continents.csv')
 
-        if not self.global_toggled and self.document_uuid is not None:
+        if self.document_uuid is not None:
             working_df = working_df[working_df['env_doc_id'] == self.document_uuid]
 
         working_df = working_df.merge(continent_df, on="visitor_country", how="left")
@@ -92,7 +96,7 @@ class DataController:
         column = 'visitor_useragent' if verbose else 'visitor_useragent_grouped'
 
         # Filter by searched document if needed
-        if not self.global_toggled and self.document_uuid is not None:
+        if self.document_uuid is not None:
             working_df = working_df[working_df['env_doc_id'] == self.document_uuid]
 
         # add grouped browser name if needed
@@ -183,7 +187,7 @@ class DataController:
 
         if doc_id is not None:
             working_df = working_df[working_df['env_doc_id'] == doc_id]
-        elif not self.global_toggled and self.document_uuid is not None:
+        elif self.document_uuid is not None:
             working_df = working_df[working_df['env_doc_id'] == self.document_uuid]
 
         """
