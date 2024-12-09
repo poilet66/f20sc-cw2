@@ -19,7 +19,6 @@ class Modes:
     Q3B = "Q3B"
     Q4 = "Q4"
     Q5 = "Q5"
-    Q6 = "Q6"
 
 class Controller:
     def __init__(self):
@@ -74,9 +73,7 @@ class Controller:
             case Modes.Q4:
                 self.plot_top_readers()
             case Modes.Q5:
-                raise NotImplemented()
-            case Modes.Q6:
-                raise NotImplemented()
+                self.display_graph()
             case _:
                 pass
 
@@ -137,5 +134,17 @@ class Controller:
 
     def display_graph(self):
         if self.viewer:
-            graph_image = self.data_controller.image_from_graph(self.data_controller.get_test_graph()) # get image data from test graph
-            self.viewer.plot_image(graph_image)
+            user_id = '3e92caf3e56ad750'
+            doc_id = '130824023411-ac90acabcb403cebc8024fa0c418f403'
+            # get graph data
+            graph_data = self.data_controller.also_likes_data(
+                user_id=user_id, doc_id=doc_id
+            )
+            # get graph image
+            graph = self.data_controller.graph_from_data(graph_data, user_id=user_id, doc_id=doc_id)
+            # Check we have graphviz enabled
+            if graph is None:
+                self.controls.display_status('GraphViz not installed!')
+                return
+            graph_image = self.data_controller.image_from_graph(graph) # get image data from test graph
+            self.viewer.plot_image(graph_image) # render graph image

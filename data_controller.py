@@ -1,8 +1,9 @@
 import pandas as pd
 import re
-from typing import Optional
+from typing import Optional, Dict, List
 
 import graphviz
+from graphviz.exceptions import ExecutableNotFound
 from PIL import Image
 import io
 import numpy as np
@@ -32,9 +33,15 @@ class DataController:
         self.df = self.path_to_pd(file_path)
 
     def set_document_filter(self, document_uuid: str) -> None:
+        if document_uuid == "": 
+            self.document_uuid = None
+            return
         self.document_uuid = document_uuid
 
     def set_user_filter(self, user_uuid: str) -> None:
+        if user_uuid == "": 
+            self.document_uuid = None
+            return
         self.user_uuid = user_uuid
 
     def path_to_pd(self, file_path: str) -> pd.DataFrame:
@@ -114,18 +121,54 @@ class DataController:
         else:
             return "Unknown"
 
-    def get_test_graph(self) -> graphviz.Digraph:
-        graph = graphviz.Digraph()
+    def also_likes_data(self, user_id: str, doc_id: str) -> Dict[str, List[str]]:
 
-        graph.attr(rankdir='LR')
+        working_df: pd.DataFrame = self.df.copy()
 
-        graph.node('A', 'Node A', style='filled', fillcolor='green')
-        graph.node('B', 'Node B')
-        graph.node('C', 'Node C')
+        # Filter out search user when generating other user profiles
+        print(working_df.iloc[0]['visitor_uuid'])
 
-        graph.edge('A', 'B', style='filled', fillcolor='green')
-        graph.edge('B', 'C')
-        graph.edge('C', 'A')
+        # remove search user, doc from these dfs so they wont be in the return of sub functions
+        top_other_readers_df = working_df[working_df['visitor_uuid'] != user_id]
+        other_docs_df = working_df[working_df['env_doc_id'] != doc_id]
+
+        # Get top K other readers (we'll hardcode 4 for now)
+        top_other_readers = self.top_k_readers(4, doc_id=doc_id, df=top_other_readers_df)
+
+        users_top_docs = {}
+
+        # iterate through readers
+        for _, row in top_other_readers.iterrows():
+            print(f'getting top docs for user: {row["visitor_uuid"]}')
+            # get top documents for user
+            user_top_docs = self.top_k_documents(4, row['visitor_uuid'], df=other_docs_df)
+            
+            users_top_docs[row['visitor_uuid']] = list(user_top_docs['env_doc_id'])
+
+        return users_top_docs
+    
+    def graph_from_data(self, data_dict: Dict[str, List[str]], user_id: str, doc_id: str) -> graphviz.Digraph:
+        graph = None
+        try:
+            graph = graphviz.Digraph()
+        except ExecutableNotFound as e: # If graphviz not installed, return None
+            return None
+
+        graph.attr(rankdir='TB')
+
+        graph.node(doc_id, doc_id[-4:], style='filled', fillcolor='green')
+        graph.node(user_id, user_id[-4:], style='filled', fillcolor='green', shape='box')
+
+        graph.edge(user_id, doc_id, style='filled', fillcolor='green')
+
+        for other_user_id in data_dict.keys():
+            # create user node
+            graph.node(other_user_id, other_user_id[-4:], shape='box')
+            for other_user_doc in data_dict.get(other_user_id):
+                # create user doc node and edge to it from user
+                graph.node(other_user_doc, other_user_doc[-4:])
+                graph.edge(other_user_id, doc_id)
+                graph.edge(other_user_id, other_user_doc)
 
         return graph
     
@@ -135,10 +178,16 @@ class DataController:
 
         return np.array(image)
     
-    def top_k_readers(self, k) -> pd.DataFrame:
-        working_df = self.df.copy() # make sure to avoid ref bugs
+    def top_k_readers(self, k, doc_id = None, df = None) -> pd.DataFrame:
 
-        if self.document_uuid is not None:
+        if df is None:
+            working_df = self.df.copy() # make sure to avoid ref bugs
+        else:
+            working_df = df
+
+        if doc_id is not None:
+            working_df = working_df[working_df['env_doc_id'] == doc_id]
+        elif self.document_uuid is not None:
             working_df = working_df[working_df['env_doc_id'] == self.document_uuid]
 
         """
@@ -159,7 +208,7 @@ class DataController:
         reader_times = working_df.groupby(['visitor_uuid', 'env_doc_id'])['read_time_seconds'].sum().reset_index()
 
         # Only display last 4 chars of each user id
-        reader_times['visitor_uuid'] = reader_times['visitor_uuid'].str[-4:]
+        if df is None: reader_times['visitor_uuid'] = reader_times['visitor_uuid'].str[-4:] # TODO: Make this cleaner, currently just a workaround to not break this
 
         # account for initial 2 seconds
         reader_times['read_time_seconds'] += 2
@@ -169,4 +218,36 @@ class DataController:
             .sort_values('read_time_seconds', ascending=False)
             .head(k)
             .round() # round to whole numbers
+        )
+    
+    def top_k_documents(self, k, user_id, df = None) -> pd.DataFrame:
+        """
+        Get the top K document id's that user `user_id` has read
+        """
+
+        if df is None:
+            working_df: pd.DataFrame = self.df.copy()
+        else:
+            working_df = df
+
+        # filter to user
+        working_df = working_df[working_df['visitor_uuid'] == user_id]
+        
+        # filter to only 'pagereadtime' events
+        working_df = working_df[working_df['event_type'] == 'pagereadtime']
+        
+        # convert readtime from millis to seconds
+        working_df['read_time_seconds'] = working_df['event_readtime'] / 1000
+        
+        # group by doc id, sum read time once grouped
+        doc_times = working_df.groupby('env_doc_id')['read_time_seconds'].sum().reset_index()
+        
+        # account for initial 2 seconds
+        doc_times['read_time_seconds'] += 2
+        
+        return (
+            doc_times[['env_doc_id', 'read_time_seconds']]
+            .sort_values('read_time_seconds', ascending=False)
+            .head(k)
+            .round()
         )

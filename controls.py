@@ -56,7 +56,7 @@ class Controls(ttk.Frame):
         self.alsoLikesBTN = RadioButton(self.center_frame, text="Also likes", variable=self.mode, value=Modes.Q5)
         self.q_buttons.append(self.alsoLikesBTN)
 
-        self.docUUID = Text(self, placeholder="Documnet UUID")
+        self.docUUID = Text(self, placeholder="Document UUID")
         self.userUUID = Text(self, placeholder="User UUID")
         self.searchBTN = Button(
             self, 
