@@ -17,8 +17,10 @@ class DataController:
 
         self.file_path: Optional[str] = None
         self.df = None
-        self.document_uuid = None
         self.global_toggled = True
+
+        self.user_uuid: Optional[str] = None
+        self.document_uuid: Optional[str] = None
 
     def has_file(self) -> bool:
         return self.file_path is not None
@@ -30,14 +32,20 @@ class DataController:
         self.file_path = file_path
         self.df = self.path_to_pd(file_path)
 
-    def set_document_filter(self, document_uuid) -> None:
+    def set_document_filter(self, document_uuid: str) -> None:
         self.document_uuid = document_uuid
 
-    def path_to_pd(self, file_path) -> pd.DataFrame:
-        
-        df =  pd.read_json(file_path, lines=True)
+    def set_user_filter(self, user_uuid: str) -> None:
+        self.user_uuid = user_uuid
 
-        return df
+    def path_to_pd(self, file_path: str) -> pd.DataFrame:
+        
+        df_all = pd.DataFrame()
+
+        for chunk in pd.read_json(file_path, lines=True, chunksize=1000000):
+            df_all = pd.concat([df_all, chunk], ignore_index=True)
+
+        return df_all
 
     def top_k_countries(self, k: int) -> pd.DataFrame:
         """

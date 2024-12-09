@@ -1,8 +1,11 @@
-from tkinter import ttk
+from tkinter import StringVar, ttk
+
 import tkinter as tk
-from buttons.random_button import RandomButton
-from buttons.file_select import Button_SelectFile
-from controller import Controller
+from components.file_select import SelectFile
+from components.button import Button
+from components.radio_button import RadioButton
+from components.text import Text
+from controller import Controller, Modes
 
 
 class Controls(ttk.Frame):
@@ -10,65 +13,83 @@ class Controls(ttk.Frame):
     def __init__(self, parent: tk.Misc, controller: Controller):
         super().__init__(parent)
 
+        print(Modes.SQR)
+        self.mode = StringVar(parent, Modes.SQR)
+
         self.controller = controller
         self.controller.register_controls(self)
 
-        self.fileSelector = Button_SelectFile(self, controller.on_file_change)
-        self.file = tk.Text(self, height=1, width=20)
+        self.grid_columnconfigure(0, weight=0)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_columnconfigure(2, weight=0)
 
-        self.randomBTN = ttk.Button(self, text="random button", command=lambda: controller.set_mode("Random"))
-        self.squareBTN = ttk.Button(self, text="square button", command=lambda: controller.set_mode("Square"))
+        self.q_buttons: list[RadioButton] = []
+
+        self.fileSelector = SelectFile(self, controller.on_file_change)
+        self.status = tk.Label(self, text="Select File", height=3, width=20, wraplength=200, justify="center")
+
+        self.center_frame = ttk.Frame(self)
+
+        # test buttons
+        self.randomBTN = RadioButton(self.center_frame, text="Random Button", variable=self.mode, value=Modes.RND)
+        self.squareBTN = RadioButton(self.center_frame, text="Square Button", variable=self.mode, value=Modes.SQR)
+        self.q_buttons.append(self.randomBTN)
+        self.q_buttons.append(self.squareBTN)
 
         #q2
-        self.countryBTN = ttk.Button(self, text="country", command=lambda: self.controller.set_mode("country"))
-        self.continentBTN = ttk.Button( self, text="continent", command=lambda: self.controller.set_mode("Continent")
-        )
+        self.countryBTN = RadioButton(self.center_frame, text="Country", variable=self.mode, value=Modes.Q2A)
+        self.continentBTN = RadioButton(self.center_frame, text="Continent", variable=self.mode, value=Modes.Q2B)
+        self.q_buttons.append(self.countryBTN)
+        self.q_buttons.append(self.continentBTN)
 
         #q3
-        self.browsersVerboseBTN = tk.Button(self, text="browser verbose", command=lambda: self.controller.set_mode("Browser-Verbose"))
-        self.browsersBTN = tk.Button(self, text="browser", command=lambda: self.controller.set_mode("Browser"))
+        self.browsersVerboseBTN = RadioButton(self.center_frame, text="Browser Verbose", variable=self.mode, value=Modes.Q3A)
+        self.browsersBTN = RadioButton(self.center_frame, text="Browser", variable=self.mode, value=Modes.Q3B)
+        self.q_buttons.append(self.browsersBTN)
+        self.q_buttons.append(self.browsersVerboseBTN)
 
         #q4
-        self.readerProfileBTN = tk.Button(self, text="reader profile", command=lambda: self.controller.set_mode("Top-Readers"))
+        self.readerProfileBTN = RadioButton(self.center_frame, text="Reader Profile", variable=self.mode, value=Modes.Q4)
+        self.q_buttons.append(self.readerProfileBTN)
 
         #q5
-        self.alsoLikesBTN = tk.Button(self, text="Also likes", command=lambda: self.controller.set_mode("graphviz"))
+        self.alsoLikesBTN = RadioButton(self.center_frame, text="Also likes", variable=self.mode, value=Modes.Q5)
+        self.q_buttons.append(self.alsoLikesBTN)
 
-        self.globalUUID = tk.Checkbutton(self, text="global", command=controller.toggle_global) # select to toggle by default
-        self.globalUUID.select()
-        self.textInput = tk.Text(self, height=1, width=20)
-        self.searchBTN = tk.Button(
+        self.docUUID = Text(self, placeholder="Documnet UUID")
+        self.userUUID = Text(self, placeholder="User UUID")
+        self.searchBTN = Button(
             self, 
             text="Search", 
-            command=lambda: controller.do_long_task(lambda: controller.search(self.textInput.get("1.0", "end").strip()))  # This is sorta scuffed, I'll DEFINITELY tidy it later.. /s
+            command=lambda: controller.do_long_task(lambda: controller.search(self.get_ids()))  # This is sorta scuffed, I'll DEFINITELY tidy it later.. /s
         )
 
-        self.file.grid(row=1, column=0)
+
+        ### adding to display
         self.fileSelector.grid(row=0, column=0)
-        self.randomBTN.grid(row=0, column=1)
-        self.squareBTN.grid(row=1, column=1)
-        self.countryBTN.grid(row=0, column=2)
-        self.continentBTN.grid(row=1, column=2)
-        self.browsersVerboseBTN.grid(row=0, column=3)
-        self.browsersBTN.grid(row=1, column=3)
-        self.readerProfileBTN.grid(row=0, column=4)
-        self.alsoLikesBTN.grid(row=2, column=1)
-        self.globalUUID.grid(row=0, column=5)
-        self.textInput.grid(row=1, column=5)
+        self.status.grid(row=1, column=0, rowspan=2)
+
+        self.center_frame.grid(row=0, column=1, rowspan=3)
+
+        self.docUUID.grid(row=0, column=5, sticky="w")
+        self.userUUID.grid(row=1, column=5, sticky="w")
         self.searchBTN.grid(row=2, column=5)
 
+        # question buttons
+        self.randomBTN.grid(row=0, column=0, sticky="w")
+        self.squareBTN.grid(row=1, column=0, sticky="w")
+        self.countryBTN.grid(row=0, column=1, sticky="w")
+        self.continentBTN.grid(row=1, column=1, sticky="w")
+        self.browsersVerboseBTN.grid(row=0, column=2, sticky="w")
+        self.browsersBTN.grid(row=1, column=2, sticky="w")
+        self.readerProfileBTN.grid(row=0, column=3, sticky="w")
+        self.alsoLikesBTN.grid(row=2, column=0, sticky="w")
+
     def disable(self):
-        self.file.config(state=tk.DISABLED)
         self.fileSelector.config(state=tk.DISABLED)
-        self.randomBTN.config(state=tk.DISABLED)
-        self.squareBTN.config(state=tk.DISABLED)
-        self.countryBTN.config(state=tk.DISABLED)
-        self.continentBTN.config(state=tk.DISABLED)
-        self.browsersVerboseBTN.config(state=tk.DISABLED)
-        self.browsersBTN.config(state=tk.DISABLED)
-        self.readerProfileBTN.config(state=tk.DISABLED)
-        self.globalUUID.config(state=tk.DISABLED)
-        self.textInput.config(state=tk.DISABLED)
+        list(map(lambda x: x.set_enable(False), self.q_buttons)) # looks a bit jank ik
+        self.userUUID.config(state=tk.DISABLED)
+        self.docUUID.config(state=tk.DISABLED)
         self.searchBTN.config(state=tk.DISABLED)
 
     def disable_search(self):
@@ -78,15 +99,14 @@ class Controls(ttk.Frame):
         self.searchBTN.config(state=tk.NORMAL)
 
     def enable(self):
-        self.file.config(state=tk.NORMAL)
         self.fileSelector.config(state=tk.NORMAL)
-        self.randomBTN.config(state=tk.NORMAL)
-        self.countryBTN.config(state=tk.NORMAL)
-        self.squareBTN.config(state=tk.NORMAL)
-        self.continentBTN.config(state=tk.NORMAL)
-        self.browsersVerboseBTN.config(state=tk.NORMAL)
-        self.browsersBTN.config(state=tk.NORMAL)
-        self.readerProfileBTN.config(state=tk.NORMAL)
-        self.globalUUID.config(state=tk.NORMAL)
-        self.textInput.config(state=tk.NORMAL)
+        list(map(lambda x: x.set_enable(True), self.q_buttons)) # looks a bit jank ik
+        self.userUUID.config(state=tk.NORMAL)
+        self.docUUID.config(state=tk.NORMAL)
         self.searchBTN.config(state=tk.NORMAL)
+
+    def display_status(self, message: str):
+        self.status.config(text=message)
+
+    def get_ids(self) -> tuple[str, str]:
+        return (self.docUUID.get(), self.userUUID.get())
