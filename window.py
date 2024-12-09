@@ -7,7 +7,7 @@ from viewer import Viewer
 class Application(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.geometry("700x500")
+        self.geometry("700x600")
         self.title("Data Visualiser")
 
         self.columnconfigure(0, weight=1)
@@ -18,11 +18,13 @@ class Application(tk.Tk):
 
 
         self.controls = Controls(self, self.controller)
-        self.controls.grid(sticky="ew")
+        self.controls.grid(sticky="ew", padx=5, pady=5)
 
         self.viewer: Viewer = Viewer(self, self.controller)
         self.viewer.grid(sticky="nsew")
 
         self.controller.register_viewer(self.viewer)
+
+        self.lift()
 
         self.mainloop()

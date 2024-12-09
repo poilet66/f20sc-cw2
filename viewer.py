@@ -21,7 +21,7 @@ class Viewer(ttk.Frame):
 
 
 
-        fig = Figure(figsize=(5, 5), dpi=100)
+        fig = Figure(figsize=(5, 4), dpi=100)
         self.plot1 = fig.add_subplot(111)
         self.canvas = FigureCanvasTkAgg(fig, master=self)
         self.canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
@@ -32,7 +32,7 @@ class Viewer(ttk.Frame):
         self.plot([i**2 for i in range(101)])
 
 
-    def plot(self, y) -> None:
+    def plot(self, y: list[float|int]) -> None:
         """plot a function"""
 
         self.plot1.clear()
