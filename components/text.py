@@ -6,6 +6,7 @@ class Text(tk.Entry):
         super().__init__(master, width=20)
         self.placeholder: str = placeholder or ""
         self.config(fg="grey")
+        self.is_placeholder = True
 
 
         self.insert(0, self.placeholder)
@@ -17,12 +18,17 @@ class Text(tk.Entry):
         if self.get() == self.placeholder:
             self.delete(0, tk.END)
             self.config(fg="black")
+            self.is_placeholder = False
 
     def on_focus_out(self, _: "tk.Event[tk.Entry]"):
         # show placeholder
         if self.get() == "":
             self.insert(0, self.placeholder)
             self.config(fg="grey")
+            self.is_placeholder = True
 
     def get_value(self) -> str:
-        return self.get("1.0", "end").strip()
+        if self.is_placeholder:
+            return ""
+        else:
+            return self.get().strip()
