@@ -1,8 +1,11 @@
+from argparse import ArgumentTypeError
+import argparse
 import random
 from pathlib import Path
 import time
 import threading
 
+from command_line.arg_types import ArgTypes
 
 from data_controller import DataController
 from typing import TYPE_CHECKING, Optional, Callable
@@ -52,10 +55,17 @@ class Controller:
         doc_id, user_id = ids
 
         if doc_id != "":
-            self.data_controller.set_document_filter(doc_id)
+            try:
+                self.data_controller.set_document_filter(ArgTypes.doc_uuid_type(doc_id))
+            except argparse.ArgumentTypeError:
+                self.controls.display_status("Wrong uuid format")
+                
 
         if user_id != "":
-            self.data_controller.set_user_filter(user_id)
+            try:
+                self.data_controller.set_user_filter(ArgTypes.user_uuid_type(doc_id))
+            except argparse.ArgumentTypeError:
+                self.controls.display_status("Wrong uuid format")
 
 
         match self.controls.mode.get():

@@ -16,15 +16,13 @@ class ArgTypes:
 
     @staticmethod
     def doc_uuid_type(value: str):
-        # TODO
-        pattern = r"^.*$"
+        pattern = r"^\d{12}-[a-z0-9]{32}$"
         if not re.match(pattern, value):
             raise argparse.ArgumentTypeError(f"Invalid doc uuid: {value}")
         return value
 
     @staticmethod
     def file_name_type(value: str):
-        # TODO
         pattern = r"^.*$"
         if not re.match(pattern, value):
             raise argparse.ArgumentTypeError(f"Invalid file name: {value}")
