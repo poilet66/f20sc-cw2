@@ -3,6 +3,7 @@ import re
 from typing import Optional, Dict, List
 
 import graphviz
+from graphviz.exceptions import ExecutableNotFound
 from PIL import Image
 import io
 import numpy as np
@@ -146,8 +147,7 @@ class DataController:
         graph = None
         try:
             graph = graphviz.Digraph()
-        except Exception:
-            print('do your  error')
+        except ExecutableNotFound as e: # If graphviz not installed, return None
             return None
 
         graph.attr(rankdir='TB')
