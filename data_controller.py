@@ -17,7 +17,6 @@ class DataController:
 
         self.file_path: Optional[str] = None
         self.df = None
-        self.global_toggled = True
 
         self.user_uuid: Optional[str] = None
         self.document_uuid: Optional[str] = None
@@ -53,9 +52,8 @@ class DataController:
         """
         working_df = self.df
 
-        # If we're not in global mode and valid uuid is provided
-        if not self.global_toggled and self.document_uuid is not None:
-
+        # If a valid uuid is provided
+        if self.document_uuid is not None:
             working_df = working_df[working_df['env_doc_id'] == self.document_uuid] # TODO: Add check here to ensure doc exists?
 
         return (
@@ -72,7 +70,7 @@ class DataController:
         working_df = self.df
         continent_df = pd.read_csv('data/continents.csv')
 
-        if not self.global_toggled and self.document_uuid is not None:
+        if self.document_uuid is not None:
             working_df = working_df[working_df['env_doc_id'] == self.document_uuid]
 
         working_df = working_df.merge(continent_df, on="visitor_country", how="left")
@@ -91,7 +89,7 @@ class DataController:
         column = 'visitor_useragent' if verbose else 'visitor_useragent_grouped'
 
         # Filter by searched document if needed
-        if not self.global_toggled and self.document_uuid is not None:
+        if self.document_uuid is not None:
             working_df = working_df[working_df['env_doc_id'] == self.document_uuid]
 
         # add grouped browser name if needed
@@ -140,7 +138,7 @@ class DataController:
     def top_k_readers(self, k) -> pd.DataFrame:
         working_df = self.df.copy() # make sure to avoid ref bugs
 
-        if not self.global_toggled and self.document_uuid is not None:
+        if self.document_uuid is not None:
             working_df = working_df[working_df['env_doc_id'] == self.document_uuid]
 
         """

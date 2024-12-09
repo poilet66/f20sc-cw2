@@ -105,11 +105,6 @@ class Controller:
         self.controls.display_status("Loading file...")
         self.do_long_task(lambda: self.data_controller.change_file(new_file_path), lambda: self.controls.display_status("File Loaded"))
 
-    def toggle_global(self):
-        self.data_controller.global_toggled = not self.data_controller.global_toggled
-        print(f'global: {self.data_controller.global_toggled}')
-
-
 
     ################################################################################
     #                               Helper Functions                               #
