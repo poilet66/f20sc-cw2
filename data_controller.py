@@ -1,6 +1,6 @@
 import pandas as pd
 import re
-from typing import Optional
+from typing import Optional, Dict, List
 
 import graphviz
 from PIL import Image
@@ -116,7 +116,7 @@ class DataController:
         else:
             return "Unknown"
 
-    def get_test_graph(self, user_id: str, doc_id: str) -> graphviz.Digraph:
+    def also_likes_data(self, user_id: str, doc_id: str) -> Dict[str, List[str]]:
 
         working_df: pd.DataFrame = self.df.copy()
 
@@ -140,10 +140,15 @@ class DataController:
             
             users_top_docs[row['visitor_uuid']] = list(user_top_docs['env_doc_id'])
 
-        print(users_top_docs) 
-
-
-        graph = graphviz.Digraph()
+        return users_top_docs
+    
+    def graph_from_data(self, data_dict: Dict[str, List[str]], user_id: str, doc_id: str) -> graphviz.Digraph:
+        graph = None
+        try:
+            graph = graphviz.Digraph()
+        except Exception:
+            print('do your  error')
+            return None
 
         graph.attr(rankdir='TB')
 
@@ -152,10 +157,10 @@ class DataController:
 
         graph.edge(user_id, doc_id, style='filled', fillcolor='green')
 
-        for other_user_id in users_top_docs.keys():
+        for other_user_id in data_dict.keys():
             # create user node
             graph.node(other_user_id, other_user_id[-4:], shape='box')
-            for other_user_doc in users_top_docs.get(other_user_id):
+            for other_user_doc in data_dict.get(other_user_id):
                 # create user doc node and edge to it from user
                 graph.node(other_user_doc, other_user_doc[-4:])
                 graph.edge(other_user_id, doc_id)

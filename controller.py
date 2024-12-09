@@ -142,5 +142,15 @@ class Controller:
 
     def display_graph(self):
         if self.viewer:
-            graph_image = self.data_controller.image_from_graph(self.data_controller.get_test_graph(user_id='3e92caf3e56ad750', doc_id='130824023411-ac90acabcb403cebc8024fa0c418f403')) # get image data from test graph
-            self.viewer.plot_image(graph_image)
+            # get graph data
+            graph_data = self.data_controller.also_likes_data(
+                user_id='3e92caf3e56ad750', doc_id='130824023411-ac90acabcb403cebc8024fa0c418f403'
+            )
+            # get graph image
+            graph = self.data_controller.graph_from_data(graph_data)
+            # Check we have graphviz enabled
+            if graph is None:
+                self.controls.display_status('GraphViz not installed!')
+                return
+            graph_image = self.data_controller.image_from_graph(graph) # get image data from test graph
+            self.viewer.plot_image(graph_image) # render graph image
