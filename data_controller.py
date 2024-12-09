@@ -135,9 +135,6 @@ class DataController:
         if self.document_uuid is None:
             return None
 
-        if self.user_uuid is None:
-            return None
-
         print(self.document_uuid, self.user_uuid)
 
         user_id = self.user_uuid
@@ -148,7 +145,7 @@ class DataController:
         print(working_df.iloc[0]['visitor_uuid'])
 
         # remove search user, doc from these dfs so they wont be in the return of sub functions
-        top_other_readers_df = working_df[working_df['visitor_uuid'] != user_id]
+        top_other_readers_df = working_df[working_df['visitor_uuid'] != user_id] if user_id is not None else working_df
         other_docs_df = working_df[working_df['env_doc_id'] != doc_id]
 
         # Get top K other readers (we'll hardcode 4 for now)
@@ -173,12 +170,17 @@ class DataController:
         except ExecutableNotFound as e: # If graphviz not installed, return None
             return None
 
+        if self.document_uuid is None:
+            return None
+        if self.user_uuid is None:
+            return None
+
         graph.attr(rankdir='TB')
 
-        graph.node(doc_id, doc_id[-4:], style='filled', fillcolor='green')
-        graph.node(user_id, user_id[-4:], style='filled', fillcolor='green', shape='box')
+        graph.node(self.document_uuid, self.document_uuid[-4:], style='filled', fillcolor='green')
+        graph.node(self.user_uuid, self.user_uuid[-4:], style='filled', fillcolor='green', shape='box')
 
-        graph.edge(user_id, doc_id, style='filled', fillcolor='green')
+        graph.edge(self.user_uuid, self.document_uuid, style='filled', fillcolor='green')
 
         for other_user_id in data_dict.keys():
             # create user node
@@ -186,7 +188,7 @@ class DataController:
             for other_user_doc in data_dict.get(other_user_id):
                 # create user doc node and edge to it from user
                 graph.node(other_user_doc, other_user_doc[-4:])
-                graph.edge(other_user_id, doc_id)
+                graph.edge(other_user_id, self.document_uuid)
                 graph.edge(other_user_id, other_user_doc)
 
         return graph

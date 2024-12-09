@@ -118,9 +118,8 @@ class Controller:
 
     def display_graph(self):
 
-        # 130313161023-ee03f65a89c7406fa097abe281341b4
+        # 130313161023-ee03f65a89c7406fa097abe281341b42
         # dab50c6213db0f24
-
 
         if not self.viewer or not self.controls:
             return
