@@ -1,4 +1,5 @@
 import random
+from pathlib import Path
 import time
 import threading
 
@@ -100,7 +101,8 @@ class Controller:
 
     def on_file_change(self, new_file_path: str):
         self.controls.display_status("Loading file...")
-        self.do_long_task(lambda: self.data_controller.change_file(new_file_path), lambda: self.controls.display_status("File Loaded"))
+        filename = Path(new_file_path).name
+        self.do_long_task(lambda: self.data_controller.change_file(new_file_path), lambda: self.controls.display_status(f"File Loaded:\n{filename}"))
 
 
     ################################################################################
