@@ -53,16 +53,11 @@ class Controller:
         if doc_id != "":
             try:
                 self.data_controller.set_document_filter(ArgTypes.doc_uuid_type(doc_id))
-                print("set filter")
-                print(self.data_controller.document_uuid)
             except argparse.ArgumentTypeError:
                 self.controls.display_status("Wrong uuid format")
         else:
             self.data_controller.set_document_filter("")
                 
-        print(self.data_controller.document_uuid)
-
-
         if user_id != "":
             try:
                 self.data_controller.set_user_filter(ArgTypes.user_uuid_type(user_id))
@@ -72,7 +67,6 @@ class Controller:
             self.data_controller.set_user_filter("")
 
 
-        print(self.data_controller.document_uuid)
 
         match self.controls.mode.get():
             case Modes.Q2A:

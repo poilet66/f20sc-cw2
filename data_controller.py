@@ -135,8 +135,6 @@ class DataController:
         if self.document_uuid is None:
             return None
 
-        print(self.document_uuid, self.user_uuid)
-
         user_id = self.user_uuid
         doc_id = self.document_uuid
 
@@ -155,7 +153,6 @@ class DataController:
 
         # iterate through readers
         for _, row in top_other_readers.iterrows():
-            print(f'getting top docs for user: {row["visitor_uuid"]}')
             # get top documents for user
             user_top_docs = self.top_k_documents(4, row['visitor_uuid'], df=other_docs_df)
             
@@ -167,20 +164,19 @@ class DataController:
         graph = None
         try:
             graph = graphviz.Digraph()
-        except ExecutableNotFound as e: # If graphviz not installed, return None
+        except ExecutableNotFound as _: # If graphviz not installed, return None
             return None
 
         if self.document_uuid is None:
             return None
-        if self.user_uuid is None:
-            return None
 
         graph.attr(rankdir='TB')
 
-        graph.node(self.document_uuid, self.document_uuid[-4:], style='filled', fillcolor='green')
-        graph.node(self.user_uuid, self.user_uuid[-4:], style='filled', fillcolor='green', shape='box')
+        if self.user_uuid is not None:
+            graph.node(self.document_uuid, self.document_uuid[-4:], style='filled', fillcolor='green')
+            graph.node(self.user_uuid, self.user_uuid[-4:], style='filled', fillcolor='green', shape='box')
 
-        graph.edge(self.user_uuid, self.document_uuid, style='filled', fillcolor='green')
+            graph.edge(self.user_uuid, self.document_uuid, style='filled', fillcolor='green')
 
         for other_user_id in data_dict.keys():
             # create user node
@@ -199,7 +195,7 @@ class DataController:
 
         return np.array(image)
     
-    def top_k_readers(self, k: int, doc_id: Optional[str] = None, df = None) -> pd.DataFrame:
+    def top_k_readers(self, k: int, doc_id: Optional[str] = None, df: Optional[pd.DataFrame] = None) -> pd.DataFrame:
 
         if df is None:
             working_df = self.df.copy() # make sure to avoid ref bugs
@@ -241,7 +237,7 @@ class DataController:
             .round() # round to whole numbers
         )
     
-    def top_k_documents(self, k, user_id, df = None) -> pd.DataFrame:
+    def top_k_documents(self, k: int, user_id: str, df: Optional[pd.DataFrame]=None) -> pd.DataFrame:
         """
         Get the top K document id's that user `user_id` has read
         """
