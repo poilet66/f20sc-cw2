@@ -1,7 +1,9 @@
-import random
+import argparse
+from pathlib import Path
 import time
 import threading
 
+from command_line.arg_types import ArgTypes
 
 from data_controller import DataController
 from typing import TYPE_CHECKING, Optional, Callable
@@ -11,8 +13,6 @@ if TYPE_CHECKING:
 
 
 class Modes:
-    RND = "RND"
-    SQR = "SQR"
     Q2A = "Q2A"
     Q2B = "Q2B"
     Q3A = "Q3A"
@@ -51,17 +51,30 @@ class Controller:
         doc_id, user_id = ids
 
         if doc_id != "":
-            self.data_controller.set_document_filter(doc_id)
+            try:
+                self.data_controller.set_document_filter(ArgTypes.doc_uuid_type(doc_id))
+                print("set filter")
+                print(self.data_controller.document_uuid)
+            except argparse.ArgumentTypeError:
+                self.controls.display_status("Wrong uuid format")
+        else:
+            self.data_controller.set_document_filter("")
+                
+        print(self.data_controller.document_uuid)
+
 
         if user_id != "":
-            self.data_controller.set_user_filter(user_id)
+            try:
+                self.data_controller.set_user_filter(ArgTypes.user_uuid_type(user_id))
+            except argparse.ArgumentTypeError:
+                self.controls.display_status("Wrong uuid format")
+        else:
+            self.data_controller.set_user_filter("")
 
+
+        print(self.data_controller.document_uuid)
 
         match self.controls.mode.get():
-            case Modes.RND:
-                self.viewer.plot([random.random() for _ in range(121)])
-            case Modes.SQR:
-                self.viewer.plot([i**2 for i in range(121)])
             case Modes.Q2A:
                 self.plot_countries()
             case Modes.Q2B:
@@ -100,8 +113,33 @@ class Controller:
 
     def on_file_change(self, new_file_path: str):
         self.controls.display_status("Loading file...")
-        self.do_long_task(lambda: self.data_controller.change_file(new_file_path), lambda: self.controls.display_status("File Loaded"))
+        filename = Path(new_file_path).name
+        self.do_long_task(lambda: self.data_controller.change_file(new_file_path), lambda: self.controls.display_status(f"File Loaded:\n{filename}"))
 
+    def display_graph(self):
+
+        # 130313161023-ee03f65a89c7406fa097abe281341b42
+        # dab50c6213db0f24
+
+        if not self.viewer or not self.controls:
+            return
+
+        # get graph data
+        graph_data = self.data_controller.also_likes_data()
+
+        if graph_data is None:
+            self.controls.display_status("No user IDs selected")
+            return
+
+        # get graph image
+        graph = self.data_controller.graph_from_data(graph_data)
+
+        # Check we have graphviz enabled
+        if graph is None:
+            self.controls.display_status('GraphViz not installed!')
+            return
+        graph_image = self.data_controller.image_from_graph(graph) # get image data from test graph
+        self.viewer.plot_image(graph_image) # render graph image
 
     ################################################################################
     #                               Helper Functions                               #
@@ -126,25 +164,3 @@ class Controller:
         
         # Start the checker thread
         threading.Thread(target=check_completion).start()
-
-    def long_task_example(self):
-        print("starting")
-        time.sleep(1)
-        print("finishing")
-
-    def display_graph(self):
-        if self.viewer:
-            user_id = '3e92caf3e56ad750'
-            doc_id = '130824023411-ac90acabcb403cebc8024fa0c418f403'
-            # get graph data
-            graph_data = self.data_controller.also_likes_data(
-                user_id=user_id, doc_id=doc_id
-            )
-            # get graph image
-            graph = self.data_controller.graph_from_data(graph_data, user_id=user_id, doc_id=doc_id)
-            # Check we have graphviz enabled
-            if graph is None:
-                self.controls.display_status('GraphViz not installed!')
-                return
-            graph_image = self.data_controller.image_from_graph(graph) # get image data from test graph
-            self.viewer.plot_image(graph_image) # render graph image

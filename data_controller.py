@@ -1,6 +1,6 @@
 import pandas as pd
 import re
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Any
 
 import graphviz
 from graphviz.exceptions import ExecutableNotFound
@@ -28,9 +28,14 @@ class DataController:
     def register_controller(self, controller: "Controller") -> None:
         self.controller = controller
 
-    def change_file(self, file_path) -> None:
+    def change_file(self, file_path: str) -> None:
         self.file_path = file_path
         self.df = self.path_to_pd(file_path)
+        self.df = self.filter_data(self.df)
+
+    def filter_data(self, df: pd.DataFrame) -> pd.DataFrame:
+        needed_types = ["pagereadtime", "pageread"]
+        return df[df['event_type'].isin(needed_types)]
 
     def set_document_filter(self, document_uuid: str) -> None:
         if document_uuid == "": 
@@ -40,7 +45,7 @@ class DataController:
 
     def set_user_filter(self, user_uuid: str) -> None:
         if user_uuid == "": 
-            self.document_uuid = None
+            self.user_uuid = None
             return
         self.user_uuid = user_uuid
 
@@ -88,7 +93,7 @@ class DataController:
             .reset_index()
         )
 
-    def top_browsers(self, verbose) -> pd.DataFrame:
+    def top_browsers(self, verbose: bool) -> pd.DataFrame:
         """
         Return top browsers, set verbose = False for grouping by browser agent (e.g.: All mozilla entries in one group)
         """
@@ -114,22 +119,33 @@ class DataController:
         Provide input verbose browser name, get grouped name as return
         """
         pattern = r'^([^/]+)'
-        matched = re.search(pattern, name)
+        try:
+            matched = re.search(pattern, name)
+            if matched:
+                return matched.group(1)
 
-        if matched:
-            return matched.group(1)
-        else:
-            return "Unknown"
+        except TypeError:
+            pass
+        return "Unknown"
 
-    def also_likes_data(self, user_id: str, doc_id: str) -> Dict[str, List[str]]:
+    def also_likes_data(self) -> Optional[Dict[str, List[str]]]:
 
         working_df: pd.DataFrame = self.df.copy()
+
+        if self.document_uuid is None:
+            return None
+
+        print(self.document_uuid, self.user_uuid)
+
+        user_id = self.user_uuid
+        doc_id = self.document_uuid
+
 
         # Filter out search user when generating other user profiles
         print(working_df.iloc[0]['visitor_uuid'])
 
         # remove search user, doc from these dfs so they wont be in the return of sub functions
-        top_other_readers_df = working_df[working_df['visitor_uuid'] != user_id]
+        top_other_readers_df = working_df[working_df['visitor_uuid'] != user_id] if user_id is not None else working_df
         other_docs_df = working_df[working_df['env_doc_id'] != doc_id]
 
         # Get top K other readers (we'll hardcode 4 for now)
@@ -147,19 +163,24 @@ class DataController:
 
         return users_top_docs
     
-    def graph_from_data(self, data_dict: Dict[str, List[str]], user_id: str, doc_id: str) -> graphviz.Digraph:
+    def graph_from_data(self, data_dict: Dict[str, List[str]]) -> Optional[graphviz.Digraph]:
         graph = None
         try:
             graph = graphviz.Digraph()
         except ExecutableNotFound as e: # If graphviz not installed, return None
             return None
 
+        if self.document_uuid is None:
+            return None
+        if self.user_uuid is None:
+            return None
+
         graph.attr(rankdir='TB')
 
-        graph.node(doc_id, doc_id[-4:], style='filled', fillcolor='green')
-        graph.node(user_id, user_id[-4:], style='filled', fillcolor='green', shape='box')
+        graph.node(self.document_uuid, self.document_uuid[-4:], style='filled', fillcolor='green')
+        graph.node(self.user_uuid, self.user_uuid[-4:], style='filled', fillcolor='green', shape='box')
 
-        graph.edge(user_id, doc_id, style='filled', fillcolor='green')
+        graph.edge(self.user_uuid, self.document_uuid, style='filled', fillcolor='green')
 
         for other_user_id in data_dict.keys():
             # create user node
@@ -167,18 +188,18 @@ class DataController:
             for other_user_doc in data_dict.get(other_user_id):
                 # create user doc node and edge to it from user
                 graph.node(other_user_doc, other_user_doc[-4:])
-                graph.edge(other_user_id, doc_id)
+                graph.edge(other_user_id, self.document_uuid)
                 graph.edge(other_user_id, other_user_doc)
 
         return graph
     
-    def image_from_graph(self, graph: graphviz.Digraph) -> np.ndarray:
+    def image_from_graph(self, graph: graphviz.Digraph) -> np.ndarray[Any, Any]:
         png = graph.pipe(format='png')
         image = Image.open(io.BytesIO(png))
 
         return np.array(image)
     
-    def top_k_readers(self, k, doc_id = None, df = None) -> pd.DataFrame:
+    def top_k_readers(self, k: int, doc_id: Optional[str] = None, df = None) -> pd.DataFrame:
 
         if df is None:
             working_df = self.df.copy() # make sure to avoid ref bugs

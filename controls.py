@@ -13,8 +13,7 @@ class Controls(ttk.Frame):
     def __init__(self, parent: tk.Misc, controller: Controller):
         super().__init__(parent)
 
-        print(Modes.SQR)
-        self.mode = StringVar(parent, Modes.SQR)
+        self.mode = StringVar(parent, Modes.Q2A)
 
         self.controller = controller
         self.controller.register_controls(self)
@@ -29,12 +28,6 @@ class Controls(ttk.Frame):
         self.status = tk.Label(self, text="Select File", height=3, width=20, wraplength=200, justify="center")
 
         self.center_frame = ttk.Frame(self)
-
-        # test buttons
-        self.randomBTN = RadioButton(self.center_frame, text="Random Button", variable=self.mode, value=Modes.RND)
-        self.squareBTN = RadioButton(self.center_frame, text="Square Button", variable=self.mode, value=Modes.SQR)
-        self.q_buttons.append(self.randomBTN)
-        self.q_buttons.append(self.squareBTN)
 
         #q2
         self.countryBTN = RadioButton(self.center_frame, text="Country", variable=self.mode, value=Modes.Q2A)
@@ -71,19 +64,17 @@ class Controls(ttk.Frame):
 
         self.center_frame.grid(row=0, column=1, rowspan=3)
 
-        self.docUUID.grid(row=0, column=5, sticky="w")
-        self.userUUID.grid(row=1, column=5, sticky="w")
-        self.searchBTN.grid(row=2, column=5)
+        self.docUUID.grid(row=0, column=2, sticky="w")
+        self.userUUID.grid(row=1, column=2, sticky="w")
+        self.searchBTN.grid(row=2, column=2)
 
         # question buttons
-        self.randomBTN.grid(row=0, column=0, sticky="w")
-        self.squareBTN.grid(row=1, column=0, sticky="w")
-        self.countryBTN.grid(row=0, column=1, sticky="w")
-        self.continentBTN.grid(row=1, column=1, sticky="w")
-        self.browsersVerboseBTN.grid(row=0, column=2, sticky="w")
-        self.browsersBTN.grid(row=1, column=2, sticky="w")
-        self.readerProfileBTN.grid(row=0, column=3, sticky="w")
-        self.alsoLikesBTN.grid(row=2, column=0, sticky="w")
+        self.countryBTN.grid(row=0, column=0, sticky="w")
+        self.continentBTN.grid(row=0, column=1, sticky="w")
+        self.browsersVerboseBTN.grid(row=1, column=0, sticky="w")
+        self.browsersBTN.grid(row=1, column=1, sticky="w")
+        self.readerProfileBTN.grid(row=2, column=0, sticky="w")
+        self.alsoLikesBTN.grid(row=2, column=1, sticky="w")
 
     def disable(self):
         self.fileSelector.config(state=tk.DISABLED)
