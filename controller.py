@@ -1,6 +1,4 @@
-from argparse import ArgumentTypeError
 import argparse
-import random
 from pathlib import Path
 import time
 import threading
@@ -15,8 +13,6 @@ if TYPE_CHECKING:
 
 
 class Modes:
-    RND = "RND"
-    SQR = "SQR"
     Q2A = "Q2A"
     Q2B = "Q2B"
     Q3A = "Q3A"
@@ -69,10 +65,6 @@ class Controller:
 
 
         match self.controls.mode.get():
-            case Modes.RND:
-                self.viewer.plot([random.random() for _ in range(121)])
-            case Modes.SQR:
-                self.viewer.plot([i**2 for i in range(121)])
             case Modes.Q2A:
                 self.plot_countries()
             case Modes.Q2B:
