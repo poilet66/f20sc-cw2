@@ -31,6 +31,13 @@ class DataController:
     def change_file(self, file_path) -> None:
         self.file_path = file_path
         self.df = self.path_to_pd(file_path)
+        print(len(self.df))
+        self.df = self.filter_data(self.df)
+        print(len(self.df))
+
+    def filter_data(self, df: pd.DataFrame) -> pd.DataFrame:
+        needed_types = ["pagereadtime", "pageread"]
+        return df[df['event_type'].isin(needed_types)]
 
     def set_document_filter(self, document_uuid: str) -> None:
         if document_uuid == "": 
@@ -114,12 +121,16 @@ class DataController:
         Provide input verbose browser name, get grouped name as return
         """
         pattern = r'^([^/]+)'
-        matched = re.search(pattern, name)
+        try:
+            matched = re.search(pattern, name)
 
-        if matched:
-            return matched.group(1)
-        else:
-            return "Unknown"
+
+            if matched:
+                return matched.group(1)
+            else:
+                return "Unknown"
+        except:
+            pass
 
     def also_likes_data(self, user_id: str, doc_id: str) -> Dict[str, List[str]]:
 
