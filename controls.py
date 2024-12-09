@@ -109,4 +109,4 @@ class Controls(ttk.Frame):
         self.status.config(text=message)
 
     def get_ids(self) -> tuple[str, str]:
-        return (self.docUUID.get(), self.userUUID.get())
+        return (self.docUUID.get_value(), self.userUUID.get_value())
