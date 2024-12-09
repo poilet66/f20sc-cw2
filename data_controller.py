@@ -1,6 +1,6 @@
 import pandas as pd
 import re
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Any
 
 import graphviz
 from graphviz.exceptions import ExecutableNotFound
@@ -28,12 +28,10 @@ class DataController:
     def register_controller(self, controller: "Controller") -> None:
         self.controller = controller
 
-    def change_file(self, file_path) -> None:
+    def change_file(self, file_path: str) -> None:
         self.file_path = file_path
         self.df = self.path_to_pd(file_path)
-        print(len(self.df))
         self.df = self.filter_data(self.df)
-        print(len(self.df))
 
     def filter_data(self, df: pd.DataFrame) -> pd.DataFrame:
         needed_types = ["pagereadtime", "pageread"]
@@ -47,7 +45,7 @@ class DataController:
 
     def set_user_filter(self, user_uuid: str) -> None:
         if user_uuid == "": 
-            self.document_uuid = None
+            self.user_uuid = None
             return
         self.user_uuid = user_uuid
 
@@ -95,7 +93,7 @@ class DataController:
             .reset_index()
         )
 
-    def top_browsers(self, verbose) -> pd.DataFrame:
+    def top_browsers(self, verbose: bool) -> pd.DataFrame:
         """
         Return top browsers, set verbose = False for grouping by browser agent (e.g.: All mozilla entries in one group)
         """
@@ -123,18 +121,28 @@ class DataController:
         pattern = r'^([^/]+)'
         try:
             matched = re.search(pattern, name)
-
-
             if matched:
                 return matched.group(1)
-            else:
-                return "Unknown"
-        except:
-            pass
 
-    def also_likes_data(self, user_id: str, doc_id: str) -> Dict[str, List[str]]:
+        except TypeError:
+            pass
+        return "Unknown"
+
+    def also_likes_data(self) -> Optional[Dict[str, List[str]]]:
 
         working_df: pd.DataFrame = self.df.copy()
+
+        if self.document_uuid is None:
+            return None
+
+        if self.user_uuid is None:
+            return None
+
+        print(self.document_uuid, self.user_uuid)
+
+        user_id = self.user_uuid
+        doc_id = self.document_uuid
+
 
         # Filter out search user when generating other user profiles
         print(working_df.iloc[0]['visitor_uuid'])
@@ -158,7 +166,7 @@ class DataController:
 
         return users_top_docs
     
-    def graph_from_data(self, data_dict: Dict[str, List[str]], user_id: str, doc_id: str) -> graphviz.Digraph:
+    def graph_from_data(self, data_dict: Dict[str, List[str]]) -> Optional[graphviz.Digraph]:
         graph = None
         try:
             graph = graphviz.Digraph()
@@ -183,13 +191,13 @@ class DataController:
 
         return graph
     
-    def image_from_graph(self, graph: graphviz.Digraph) -> np.ndarray:
+    def image_from_graph(self, graph: graphviz.Digraph) -> np.ndarray[Any, Any]:
         png = graph.pipe(format='png')
         image = Image.open(io.BytesIO(png))
 
         return np.array(image)
     
-    def top_k_readers(self, k, doc_id = None, df = None) -> pd.DataFrame:
+    def top_k_readers(self, k: int, doc_id: Optional[str] = None, df = None) -> pd.DataFrame:
 
         if df is None:
             working_df = self.df.copy() # make sure to avoid ref bugs

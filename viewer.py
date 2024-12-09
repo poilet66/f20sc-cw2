@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from typing import Any
 
 import pandas as pd
 
@@ -60,7 +61,7 @@ class Viewer(ttk.Frame):
         self.canvas.draw()
         self.toolbar.update()
 
-    def plot_image(self, image: np.ndarray) -> None:
+    def plot_image(self, image: np.ndarray[Any, Any]) -> None:
         self.plot1.clear()
         self.plot1.imshow(image)
         self.plot1.axis('off')

@@ -27,6 +27,12 @@ class CommandLineHandler:
             raise argparse.ArgumentError(None, "Missing file argument")
         self.data_controller.change_file(self.args["f"])
 
+        if self.args["d"] is not None:
+            self.data_controller.set_document_filter(self.args["d"])
+
+        if self.args["u"] is not None:
+            self.data_controller.set_user_filter(self.args["u"])
+
         match self.args["t"]:
             case "2a":
                 self.q2a()
