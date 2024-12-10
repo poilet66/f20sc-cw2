@@ -53,8 +53,6 @@ class CommandLineHandler:
                 self.q5d()
             case "6":
                 self.q6()
-            case "7":
-                self.q7()
             case _:
                 raise Exception("Invalid Task")
 
@@ -79,10 +77,13 @@ class CommandLineHandler:
         print_bar(df, "visitor_uuid", "read_time_seconds")
 
     def q5d(self) -> None:
-        raise NotImplementedError
+        user_dict = self.data_controller.also_likes_data()
+        print('List of also-liked documents:')
+        count = 1
+        for doc_list in user_dict.values():
+            for doc in doc_list:
+                print(f'{count}. {doc}')
+                count += 1
 
     def q6(self) -> None:
         window = GraphWindow(self.data_controller)
-
-    def q7(self) -> None:
-        raise NotImplementedError
