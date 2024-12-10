@@ -1,6 +1,6 @@
 import pandas as pd
 import re
-from typing import Optional, Dict, List, Any
+from typing import Optional, Dict, List, Any, Callable
 
 import graphviz
 from graphviz.exceptions import ExecutableNotFound
@@ -28,10 +28,18 @@ class DataController:
     def register_controller(self, controller: "Controller") -> None:
         self.controller = controller
 
-    def change_file(self, file_path: str) -> None:
+    def change_file(self, file_path: str, callback: Optional[Callable[[bool], None]]) -> None:
+        """change the file location, return true if successful"""
         self.file_path = file_path
         self.df = self.path_to_pd(file_path)
+        if self.df is None:
+            if callback:
+                callback(False)
+            return
         self.df = self.filter_data(self.df)
+        if callback:
+            callback(True)
+
 
     def filter_data(self, df: pd.DataFrame) -> pd.DataFrame:
         needed_types = ["pagereadtime", "pageread"]
@@ -49,14 +57,18 @@ class DataController:
             return
         self.user_uuid = user_uuid
 
-    def path_to_pd(self, file_path: str) -> pd.DataFrame:
+    def path_to_pd(self, file_path: str) -> Optional[pd.DataFrame]:
         
         df_all = pd.DataFrame()
 
-        for chunk in pd.read_json(file_path, lines=True, chunksize=1000000):
-            df_all = pd.concat([df_all, chunk], ignore_index=True)
-
-        return df_all
+        try:
+            for chunk in pd.read_json(file_path, lines=True, chunksize=1000000):
+                df_all = pd.concat([df_all, chunk], ignore_index=True)
+            return df_all
+        except UnicodeDecodeError:
+            return None
+        except ValueError:
+            return None
 
     def top_k_countries(self, k: int) -> pd.DataFrame:
         """

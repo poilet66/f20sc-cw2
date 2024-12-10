@@ -11,6 +11,7 @@ class SelectFile(Button):
 
     def handle_click(self) -> None:
         self.path = askopenfilename()
-        self.file_callback(self.path)
+        if self.path:
+            self.file_callback(self.path)
         
 
