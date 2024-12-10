@@ -194,10 +194,10 @@ class DataController:
         for other_user_id in data_dict.keys():
             # create user node
             graph.node(other_user_id, other_user_id[-4:], shape='box')
+            graph.edge(other_user_id, self.document_uuid)
             for other_user_doc in data_dict.get(other_user_id):
                 # create user doc node and edge to it from user
                 graph.node(other_user_doc, other_user_doc[-4:])
-                graph.edge(other_user_id, self.document_uuid)
                 graph.edge(other_user_id, other_user_doc)
 
         return graph
