@@ -2,6 +2,7 @@ import argparse
 import data_controller
 from command_line.arg_types import ArgTypes
 from command_line.tabulate import print_bar
+from command_line.graph_view import GraphWindow
 
 
 class CommandLineHandler:
@@ -81,7 +82,7 @@ class CommandLineHandler:
         raise NotImplementedError
 
     def q6(self) -> None:
-        raise NotImplementedError
+        window = GraphWindow(self.data_controller)
 
     def q7(self) -> None:
         raise NotImplementedError
