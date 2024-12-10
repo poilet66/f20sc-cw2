@@ -109,7 +109,7 @@ class DataController:
         """
         Return top browsers, set verbose = False for grouping by browser agent (e.g.: All mozilla entries in one group)
         """
-        working_df = self.df
+        working_df = self.df.copy()
         column = 'visitor_useragent' if verbose else 'visitor_useragent_grouped'
 
         # Filter by searched document if needed
@@ -161,7 +161,7 @@ class DataController:
         # Get top K other readers (we'll hardcode 4 for now)
         top_other_readers = self.top_k_readers(4, doc_id=doc_id, df=top_other_readers_df)
 
-        users_top_docs = {}
+        users_top_docs: Dict[str, List[str]] = {}
 
         # iterate through readers
         for _, row in top_other_readers.iterrows():
