@@ -77,6 +77,12 @@ class CommandLineHandler:
         print_bar(df, "visitor_uuid", "read_time_seconds")
 
     def q5d(self) -> None:
+        if self.args["d"] is None:
+            print('You must specify a document id')
+            return
+        if self.args["u"] is None:
+            print('You must specify a user')
+            return
         user_dict = self.data_controller.also_likes_data()
         print('List of also-liked documents:')
         count = 1
