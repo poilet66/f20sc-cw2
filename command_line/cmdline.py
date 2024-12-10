@@ -2,6 +2,7 @@ import argparse
 import data_controller
 from command_line.arg_types import ArgTypes
 from command_line.tabulate import print_bar
+from command_line.graph_view import GraphWindow
 
 
 class CommandLineHandler:
@@ -52,8 +53,6 @@ class CommandLineHandler:
                 self.q5d()
             case "6":
                 self.q6()
-            case "7":
-                self.q7()
             case _:
                 raise Exception("Invalid Task")
 
@@ -78,10 +77,19 @@ class CommandLineHandler:
         print_bar(df, "visitor_uuid", "read_time_seconds")
 
     def q5d(self) -> None:
-        raise NotImplementedError
+        if self.args["d"] is None:
+            print('You must specify a document id')
+            return
+        if self.args["u"] is None:
+            print('You must specify a user')
+            return
+        user_dict = self.data_controller.also_likes_data()
+        print('List of also-liked documents:')
+        count = 1
+        for doc_list in user_dict.values():
+            for doc in doc_list:
+                print(f'{count}. {doc}')
+                count += 1
 
     def q6(self) -> None:
-        raise NotImplementedError
-
-    def q7(self) -> None:
-        raise NotImplementedError
+        window = GraphWindow(self.data_controller)
