@@ -25,7 +25,11 @@ class CommandLineHandler:
     def run(self):
         if self.args["f"] is None:
             raise argparse.ArgumentError(None, "Missing file argument")
-        self.data_controller.change_file(self.args["f"])
+
+        def on_load(success: bool):
+            if not success:
+                raise FileNotFoundError()
+        self.data_controller.change_file(self.args["f"], on_load)
 
         if self.args["d"] is not None:
             self.data_controller.set_document_filter(self.args["d"])

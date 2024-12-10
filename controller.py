@@ -1,6 +1,5 @@
 import argparse
 from pathlib import Path
-import time
 import threading
 
 from command_line.arg_types import ArgTypes
@@ -112,9 +111,17 @@ class Controller:
             self.viewer.plot_bargraph(df, df.columns[0], df.columns[1], title="Top 10 Readers by Read Time")
 
     def on_file_change(self, new_file_path: str):
-        self.controls.display_status("Loading file...")
-        filename = Path(new_file_path).name
-        self.do_long_task(lambda: self.data_controller.change_file(new_file_path), lambda: self.controls.display_status(f"File Loaded:\n{filename}"))
+        if self.controls:
+            self.controls.display_status("Loading file...")
+            filename = Path(new_file_path).name
+            def on_load(success: bool):
+                if self.controls is None:
+                    return
+                if success:
+                    self.controls.display_status(f"File Loaded:\n{filename}")
+                else:
+                    self.controls.display_status("File not loaded")
+            self.do_long_task(lambda: self.data_controller.change_file(new_file_path, on_load))
 
     def display_graph(self):
 
