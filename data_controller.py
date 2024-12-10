@@ -2,6 +2,7 @@ import pandas as pd
 import re
 from typing import Optional, Dict, List, Any, Callable
 
+from data.continents import data as continent_data
 import graphviz
 from graphviz.exceptions import ExecutableNotFound
 from PIL import Image
@@ -92,7 +93,7 @@ class DataController:
         Return top k continents and their viewage
         """
         working_df = self.df
-        continent_df = pd.read_csv('data/continents.csv')
+        continent_df = pd.DataFrame(continent_data[1:], columns=continent_data[0])
 
         if self.document_uuid is not None:
             working_df = working_df[working_df['env_doc_id'] == self.document_uuid]
